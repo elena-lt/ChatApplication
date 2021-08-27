@@ -1,0 +1,79 @@
+package com.example.chatapplication.ui.authentication
+
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.viewbinding.ViewBinding
+import com.example.chatapplication.R
+import com.example.chatapplication.databinding.FragmentLoginBinding
+import com.example.chatapplication.models.mapper.UserMapper
+import com.example.chatapplication.ui.authentication.mvi.AuthenticationState
+import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
+import com.example.chatapplication.ui.base.BaseAuthFragment
+import com.example.chatapplication.utils.Constants.TAG
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
+@InternalCoroutinesApi
+@AndroidEntryPoint
+class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
+
+    override val bindingInflater: (LayoutInflater) -> ViewBinding
+        get() = FragmentLoginBinding::inflate
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.tvDontHaveAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+        }
+
+        handleOnClickEvents()
+        subscribeToEvents()
+    }
+
+    private fun handleOnClickEvents(){
+        binding.btnLogin.setOnClickListener {
+            viewModel.setIntent(
+                AuthenticationStateEvent.LoginUser(
+                    binding.edtEmail.text.toString(),
+                    binding.edtPassword.text.toString()
+                )
+            )
+
+        }
+    }
+
+    private fun subscribeToEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.dataState.collect {
+                        onStateChangeListener.onDataStateChanged(it)
+                        it.data?.let {
+                            Log.d("AppDebug", "subscribeToEvents: success ${it.id}")
+                            viewModel.setState(AuthenticationState.Success(UserMapper.toUser(it)))
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.authState.collect {
+                        when (it) {
+                            is AuthenticationState.Success -> {
+                                findNavController().navigate(R.id.action_loginFragment_to_chatsFragment)
+                                Log.d(TAG, "subscribeToEvents: navigating to main fragment")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
