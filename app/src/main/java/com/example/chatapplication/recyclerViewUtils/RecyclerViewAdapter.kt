@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.chatapplication.databinding.ItemChatLayoutBinding
 import com.example.chatapplication.databinding.ItemUserLayoutBinding
 import com.example.chatapplication.models.Models
 import java.lang.IllegalArgumentException
 
-class RecyclerViewAdapter (
+class RecyclerViewAdapter(
     private val onClickListener: OnClickListener? = null,
-        ) : RecyclerView.Adapter<RecyclerViewHolder>() {
+) : RecyclerView.Adapter<RecyclerViewHolder>() {
 
     companion object {
         const val USER = 0
         const val CHAT = 1
     }
-
 //    val onItemClickListener: ((position: Int, item: Models) -> Unit)? = null
 
     private val diffUtil = object : DiffUtil.ItemCallback<Models>() {
@@ -42,16 +42,29 @@ class RecyclerViewAdapter (
                     onClickListener = onClickListener
                 )
             }
+            CHAT -> {
+                RecyclerViewHolder.ChatItemViewHolder(
+                    ItemChatLayoutBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ),
+                    onClickListener = onClickListener
+                )
+            }
             else -> throw IllegalArgumentException("No such view holder found")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-       when (holder){
-           is RecyclerViewHolder.UserItemViewHolder -> {
-               holder.bind(differ.currentList[position] as Models.User)
-           }
-       }
+        when (holder) {
+            is RecyclerViewHolder.UserItemViewHolder -> {
+                holder.bind(differ.currentList[position] as Models.User)
+            }
+            is RecyclerViewHolder.ChatItemViewHolder -> {
+                holder.bind(differ.currentList[position] as Models.Chat)
+            }
+        }
     }
 
     override fun getItemCount(): Int = differ.currentList.size
@@ -59,6 +72,7 @@ class RecyclerViewAdapter (
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
             is Models.User -> USER
+            is Models.Chat -> CHAT
         }
     }
 }

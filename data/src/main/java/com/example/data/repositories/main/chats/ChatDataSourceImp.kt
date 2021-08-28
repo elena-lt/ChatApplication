@@ -27,14 +27,16 @@ class ChatDataSourceImp @Inject constructor() : ChatsDataSource {
         kotlin.runCatching {
             val requestBuilder = QBRequestGetBuilder()
             requestBuilder.limit = 50
-//requestBuilder.setSkip(100);
-//requestBuilder.sortAsc("last_message_date_sent");
+//            requestBuilder.skip = 100
+//            requestBuilder.sortAsc("last_message_date_sent")
             QBRestChatService.getChatDialogs(null, requestBuilder).perform()
         }.onSuccess {
+            Log.d("AppDebug", "loadAllChats: ${it.toString()}")
             it?.let {
                 val chatList = it.map { chatDialog ->
                     ChatDialogMapper.toChatDialogDomain(chatDialog)
                 }.toMutableList()
+                Log.d("AppDebug", "loadAllChats: ${chatList.toString()}")
                 emit(DataState.SUCCESS(data = chatList))
             } ?: emit(
                 DataState.SUCCESS<MutableList<ChatDialogDomain>>(

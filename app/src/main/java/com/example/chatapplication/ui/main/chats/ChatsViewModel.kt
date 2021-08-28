@@ -1,6 +1,7 @@
 package com.example.chatapplication.ui.main.chats
 
 import androidx.lifecycle.viewModelScope
+import com.example.chatapplication.models.mapper.ChatDialogMapper
 import com.example.chatapplication.models.mapper.UserMapper
 import com.example.chatapplication.ui.base.BaseViewModel
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
@@ -12,7 +13,6 @@ import com.example.core.usecases.main.chats.StartNewChatUseCase
 import com.example.core.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,8 +33,16 @@ class ChatsViewModel @Inject constructor(
 
     private fun loadAllChats() {
         viewModelScope.launch {
-            loadChatsUseCase.invoke().collect {
-                setDataState(it)
+            loadChatsUseCase.invoke().collect { dataState ->
+                setDataState(dataState)
+
+                dataState.data.let {chatList ->
+                    chatList?.let{
+                        setViewState(currentState.copy(chats = ChatsViewState.Chats(it.map { chat ->
+                            ChatDialogMapper.toChatDialog(chat)
+                        }.toMutableList())))
+                    }
+                }
             }
         }
     }
@@ -45,11 +53,10 @@ class ChatsViewModel @Inject constructor(
                 setDataState(it)
 
                 it.data?.let {
-                    setViewState(
-                        ChatsViewState.Users(users = it.map {
-                            UserMapper.toUser(it)
-                        }.toMutableList())
-                    )
+                    val newState = currentState.copy(users = ChatsViewState.Users(it.map { user ->
+                        UserMapper.toUser(user)
+                    }.toMutableList()))
+                    setViewState(newState)
                 }
             }
         }
@@ -67,5 +74,5 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
-    override fun createInitialState(): ChatsViewState = ChatsViewState.Idle
+    override fun createInitialState(): ChatsViewState = ChatsViewState()
 }

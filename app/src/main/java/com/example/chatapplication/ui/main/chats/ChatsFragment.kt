@@ -8,9 +8,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.FragmentChatsBinding
+import com.example.chatapplication.models.Models
+import com.example.chatapplication.recyclerViewUtils.OnClickListener
+import com.example.chatapplication.recyclerViewUtils.RecyclerViewAdapter
 import com.example.chatapplication.ui.base.BaseChatsFragment
 import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
@@ -22,15 +26,18 @@ import kotlinx.coroutines.launch
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
-class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>() {
+class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener {
 
     override val bindingInflater: (LayoutInflater) -> ViewBinding
         get() = FragmentChatsBinding::inflate
 
+    private lateinit var chatsRvAdapter: RecyclerViewAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        loadChats()
+        loadChats()
+        setupRecycler()
         subscribeToObservers()
         handleOnClickEvents()
 
@@ -43,21 +50,19 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>() {
 
     }
 
-    private fun subscribeToObservers(){
+    private fun subscribeToObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED){
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
-                    viewModel.dataState.collect{
+                    viewModel.dataState.collect {
                         onStateChangeListener.onDataStateChanged(it)
                     }
                 }
 
                 launch {
-                    viewModel.viewState.collect {
-                        when(it){
-                            is ChatsViewState.Chats -> {
-                                Log.d("AppDebug", "subscribeToObservers: chat list updated ${it.chats}")
-                            }
+                    viewModel.viewState.collect { viewState ->
+                        viewState.chats?.let { chats ->
+                            chatsRvAdapter.submitList(chats.chats)
                         }
                     }
                 }
@@ -67,5 +72,19 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>() {
 
     private fun loadChats() {
         viewModel.setStateEvent(ChatsStateEvent.LoadAllChats)
+    }
+
+    private fun setupRecycler() {
+        binding.rvChats.apply {
+            layoutManager = LinearLayoutManager(this@ChatsFragment.context)
+            chatsRvAdapter = RecyclerViewAdapter(this@ChatsFragment)
+            adapter = chatsRvAdapter
+
+        }
+    }
+
+    override fun onItemSelected(position: Int, item: Models) {
+        val chat = item as Models.Chat
+        Log.d("AppDebug", "onItemSelected: ${chat.dialogId}")
     }
 }

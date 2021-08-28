@@ -47,14 +47,7 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
 
                 launch {
                     viewModel.viewState.collect { viewState ->
-                        when (viewState) {
-                            is ChatsViewState.Users -> {
-                                Log.d("AppDebug", "subscribeToObservers: ${viewState.users}")
-                                viewState.users?.let {
-                                    usersRvAdapter.submitList(it)
-                                }
-                            }
-                        }
+                        viewState.chats
                     }
                 }
             }

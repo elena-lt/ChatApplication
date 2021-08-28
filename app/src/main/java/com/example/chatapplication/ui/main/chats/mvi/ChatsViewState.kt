@@ -3,9 +3,11 @@ package com.example.chatapplication.ui.main.chats.mvi
 import com.example.chatapplication.models.Models
 import com.quickblox.chat.model.QBChatDialog
 
-sealed class ChatsViewState {
-
-    object Idle : ChatsViewState()
-    data class Chats(val chats: MutableList<QBChatDialog>): ChatsViewState()
-    data class Users(val users: MutableList<Models.User>): ChatsViewState()
+data class ChatsViewState(
+    val chats: Chats? = null,
+    val users: Users? = null
+) {
+    object Idle
+    data class Chats(val chats: MutableList<Models.Chat>)
+    data class Users(val users: MutableList<Models.User>)
 }
