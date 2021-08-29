@@ -6,19 +6,26 @@ import com.example.core.models.UserDomain
 import com.example.core.utils.DataState
 import com.example.data.mappers.UserMapper
 import com.example.data.repositories.authentication.AuthenticationDataSource
+import com.example.data.sessionManager.SessionManger
+import com.quickblox.auth.session.QBSession
+import com.quickblox.auth.session.QBSessionManager
+import com.quickblox.auth.session.QBSessionParameters
+import com.quickblox.chat.QBChatService
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import kotlin.math.log
 
-class AuthenticationDataSourceImp : AuthenticationDataSource {
+class AuthenticationDataSourceImp @Inject constructor(
+    val sessionManager: SessionManger
+) : AuthenticationDataSource {
 
     @ExperimentalCoroutinesApi
     override fun signUpUser(
@@ -55,10 +62,30 @@ class AuthenticationDataSourceImp : AuthenticationDataSource {
                 query.perform()
             }.onSuccess {
                 emit(DataState.SUCCESS(UserMapper.toUserDomain(it)))
+//                sessionManager.createSessionManagerListener()
+                createChatService(user)
             }.onFailure {
                 emit(DataState.ERROR<UserDomain>(errorMessage = it.toString()))
             }
 
         }
 
+
+    fun createChatService(user: QBUser) {
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                QBChatService.getInstance().isReconnectionAllowed = true
+                QBChatService.getInstance().setUseStreamManagement(true)
+                QBChatService.getInstance().login(user, object : QBEntityCallback<Void> {
+                    override fun onSuccess(p0: Void?, p1: Bundle?) {
+                        Log.d("AppDebug", "onSuccess: chat service created")
+                    }
+
+                    override fun onError(p0: QBResponseException?) {
+                        Log.d("AppDebug", "onError: chat service not created ${p0?.message}")
+                    }
+                })
+            }
+        }
+    }
 }

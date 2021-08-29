@@ -25,6 +25,12 @@
             android:layout_width="250dp"
             android:layout_height="70dp" />
 
+        <ImageButton
+            android:id="@+id/account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/send_button"/>
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

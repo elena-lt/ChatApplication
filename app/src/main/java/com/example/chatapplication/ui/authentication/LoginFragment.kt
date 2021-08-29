@@ -57,22 +57,21 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                     viewModel.dataState.collect {
                         onStateChangeListener.onDataStateChanged(it)
                         it.data?.let {
-                            Log.d("AppDebug", "subscribeToEvents: success ${it.id}")
                             viewModel.setState(AuthenticationState.Success(UserMapper.toUser(it)))
                         }
                     }
                 }
 
-                launch {
-                    viewModel.authState.collect {
-                        when (it) {
-                            is AuthenticationState.Success -> {
-                                findNavController().navigate(R.id.action_loginFragment_to_chatsFragment)
-                                Log.d(TAG, "subscribeToEvents: navigating to main fragment")
-                            }
-                        }
-                    }
-                }
+//                launch {
+//                    viewModel.authState.collect {
+//                        when (it) {
+//                            is AuthenticationState.Success -> {
+//                                findNavController().navigate(R.id.action_loginFragment_to_chatsFragment)
+//                                Log.d(TAG, "subscribeToEvents: navigating to main fragment")
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
     }

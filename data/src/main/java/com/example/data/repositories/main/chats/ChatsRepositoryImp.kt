@@ -1,6 +1,7 @@
 package com.example.data.repositories.main.chats
 
 import com.example.core.models.ChatDialogDomain
+import com.example.core.models.ChatMessageDomain
 import com.example.core.models.UserDomain
 import com.example.core.repositories.ChatsRepository
 import com.example.core.utils.DataState
@@ -20,4 +21,14 @@ class ChatsRepositoryImp @Inject constructor(
 
     override suspend fun startNewChat(userId: Int): Flow<DataState<ChatDialogDomain>> =
         dataSource.startNewChat(userId)
+
+    override suspend fun retrieveChatHistory(chatID: String): Flow<DataState<MutableList<ChatMessageDomain>>> =
+        dataSource.retrieveChatHistory(chatID)
+
+    override suspend fun sendMessage(
+        messageContent: String,
+        chatId: String,
+        occupantsIds: List<Int>
+    ) =
+        dataSource.sendMessage(messageContent, chatId, occupantsIds)
 }

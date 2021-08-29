@@ -25,4 +25,5 @@ sealed class Models {
         val occupantsIds: List<Int>? = null,
         val type: Int? = null,
     ) : Models()
+
 }

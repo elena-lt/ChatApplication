@@ -4,6 +4,7 @@ import com.example.core.repositories.AuthenticationRepository
 import com.example.data.repositories.authentication.AuthenticationDataSource
 import com.example.data.repositories.authentication.AuthenticationDataSourceImp
 import com.example.data.repositories.authentication.AuthenticationRepositoryImp
+import com.example.data.sessionManager.SessionManger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,5 +22,6 @@ class AuthenticationModule {
 
     @Provides
     @Singleton
-    fun provideAutheticationDataSource(): AuthenticationDataSource = AuthenticationDataSourceImp()
+    fun provideAutheticationDataSource(sessionManger: SessionManger): AuthenticationDataSource =
+        AuthenticationDataSourceImp(sessionManger)
 }

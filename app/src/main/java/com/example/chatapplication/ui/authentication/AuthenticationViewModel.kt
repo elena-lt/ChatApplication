@@ -75,7 +75,6 @@ class AuthenticationViewModel @Inject constructor(
     }
 
     private fun signUpUser(email: String, password: String) {
-        Log.d("AppDebug", "signUpUser // viewModel: signup user")
         viewModelScope.launch {
             signUp.execute(email, password).collect { dataState ->
                 setDataState(dataState)

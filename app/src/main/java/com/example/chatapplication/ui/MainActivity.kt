@@ -3,38 +3,94 @@ package com.example.chatapplication.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.chatapplication.BuildConfig.*
+import com.example.chatapplication.R
 import com.example.chatapplication.databinding.ActivityMainBinding
+import com.example.chatapplication.ui.authentication.LoginFragmentDirections
 import com.example.chatapplication.utils.Constants.TAG
 import com.example.core.utils.DataState
+import com.example.data.sessionManager.SessionManger
 import com.quickblox.auth.session.QBSettings
+import com.quickblox.chat.QBChatService
+import com.quickblox.core.LogLevel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
+    @Inject
+    lateinit var sessionManager: SessionManger
+
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupNavGraph()
+
+        initSessionManager()
         setupQuickBlox()
+        subscribeToObservers()
 
     }
 
-    private fun setupQuickBlox(){
-        QBSettings.getInstance().init(applicationContext, QB_APPLICATION_ID, QB_AUTH_KEY, QB_AUTH_SECRET)
+    override fun onPause() {
+        sessionManager.unregister()
+        super.onPause()
+    }
+
+    private fun subscribeToObservers(){
+        sessionManager.curruser.observe(this, { userLogin ->
+            if (!userLogin.isNullOrBlank()) {
+                navigateToChatsFragment()
+            } else {
+                navigateToLoginFragment()
+            }
+        })
+    }
+
+    private fun setupQuickBlox() {
+        QBSettings.getInstance()
+            .init(applicationContext, QB_APPLICATION_ID, QB_AUTH_KEY, QB_AUTH_SECRET)
         QBSettings.getInstance().accountKey = QB_ACCOUNT_KEY
+        QBSettings.getInstance().logLevel = LogLevel.DEBUG
+        QBChatService.setDebugEnabled(true)
+    }
+
+    private fun initSessionManager(){
+        sessionManager.registerListener()
+        sessionManager.createSessionManagerListener()
+    }
+
+    private fun navigateToLoginFragment() {
+        navController.navigate(R.id.loginFragment)
+        Log.d(TAG, "navigateToLoginFragment: ${navController.graph.count()}")
+    }
+
+    private fun navigateToChatsFragment() {
+        navController.navigate(R.id.action_loginFragment_to_chatsFragment)
+    }
+
+    private fun setupNavGraph() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        navController = navHostFragment.navController
     }
 
     override fun onDataStateChanged(dataState: DataState<*>) {
-        dataState.loading.let{
+        dataState.loading.let {
             Log.d(TAG, "loading.....")
         }
 
-        dataState.errorMessage?.let{
+        dataState.errorMessage?.let {
             Log.d(TAG, "error..... $it")
         }
 

@@ -1,5 +1,6 @@
 package com.example.chatapplication.recyclerViewUtils
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -17,6 +18,7 @@ class RecyclerViewAdapter(
     companion object {
         const val USER = 0
         const val CHAT = 1
+
     }
 //    val onItemClickListener: ((position: Int, item: Models) -> Unit)? = null
 
@@ -71,7 +73,10 @@ class RecyclerViewAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
-            is Models.User -> USER
+            is Models.User -> {
+                Log.d("AppDebug", "getItemViewType some user type")
+                USER
+            }
             is Models.Chat -> CHAT
         }
     }

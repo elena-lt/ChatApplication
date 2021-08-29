@@ -19,6 +19,7 @@ import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
 import com.example.chatapplication.ui.main.chats.mvi.ChatsViewState
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jivesoftware.smackx.chatstates.ChatState
@@ -47,7 +48,9 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
 
                 launch {
                     viewModel.viewState.collect { viewState ->
-                        viewState.chats
+                        viewState.users?.users?.let{
+                            usersRvAdapter.submitList(it)
+                        }
                     }
                 }
             }
@@ -62,7 +65,7 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
         viewModel.setStateEvent(ChatsStateEvent.StartNewChat(userId))
     }
 
-    fun setupRecyclerView() {
+    private fun setupRecyclerView() {
         binding.rvUsers.apply {
             layoutManager = LinearLayoutManager(this@NewChatFragment.context)
             usersRvAdapter = RecyclerViewAdapter(this@NewChatFragment)
@@ -75,7 +78,6 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
 
     override fun onItemSelected(position: Int, item: Models) {
         val user = item as Models.User
-        Log.d("AppDebug", "onItemSelected: item clicked ${item.login}")
         user.id?.let { startPrivateChat(it) }
     }
 
