@@ -24,7 +24,8 @@ import javax.inject.Inject
 import kotlin.math.log
 
 class AuthenticationDataSourceImp @Inject constructor(
-    val sessionManager: SessionManger
+    val sessionManager: SessionManger,
+    val qbChatService: QBChatService
 ) : AuthenticationDataSource {
 
     @ExperimentalCoroutinesApi
@@ -53,7 +54,6 @@ class AuthenticationDataSourceImp @Inject constructor(
 
     override suspend fun loginUser(login: String, password: String): Flow<DataState<UserDomain>> =
         flow {
-            Log.d("AppDebug", "loginUser: ${Thread.currentThread().name}")
             emit(DataState.LOADING(true))
 
             val user = QBUser(login, password)
@@ -71,12 +71,12 @@ class AuthenticationDataSourceImp @Inject constructor(
         }
 
 
-    fun createChatService(user: QBUser) {
+    private fun createChatService(user: QBUser) {
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                QBChatService.getInstance().isReconnectionAllowed = true
-                QBChatService.getInstance().setUseStreamManagement(true)
-                QBChatService.getInstance().login(user, object : QBEntityCallback<Void> {
+                qbChatService.isReconnectionAllowed = true
+                qbChatService.setUseStreamManagement(true)
+                qbChatService.login(user, object : QBEntityCallback<Void> {
                     override fun onSuccess(p0: Void?, p1: Bundle?) {
                         Log.d("AppDebug", "onSuccess: chat service created")
                     }

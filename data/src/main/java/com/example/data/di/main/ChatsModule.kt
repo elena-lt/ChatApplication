@@ -8,12 +8,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class ChatsModule {
 
+    @ExperimentalCoroutinesApi
     @Provides
     @Singleton
     fun provideChatDataSource(): ChatsDataSource = ChatDataSourceImp()

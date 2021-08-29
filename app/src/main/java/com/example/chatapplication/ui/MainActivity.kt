@@ -4,12 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.example.chatapplication.BuildConfig.*
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.ActivityMainBinding
-import com.example.chatapplication.ui.authentication.LoginFragmentDirections
+
 import com.example.chatapplication.utils.Constants.TAG
 import com.example.core.utils.DataState
 import com.example.data.sessionManager.SessionManger
@@ -47,8 +47,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         super.onPause()
     }
 
-    private fun subscribeToObservers(){
-        sessionManager.curruser.observe(this, { userLogin ->
+    private fun subscribeToObservers() {
+        sessionManager.currUser.observe(this, { userLogin ->
             if (!userLogin.isNullOrBlank()) {
                 navigateToChatsFragment()
             } else {
@@ -65,18 +65,25 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         QBChatService.setDebugEnabled(true)
     }
 
-    private fun initSessionManager(){
+    private fun initSessionManager() {
         sessionManager.registerListener()
         sessionManager.createSessionManagerListener()
     }
 
     private fun navigateToLoginFragment() {
-        navController.navigate(R.id.loginFragment)
-        Log.d(TAG, "navigateToLoginFragment: ${navController.graph.count()}")
+        navController.navigate(
+            R.id.loginFragment,
+            null,
+            NavOptions.Builder().setPopUpTo(R.id.loginFragment, true).build()
+        )
     }
 
     private fun navigateToChatsFragment() {
-        navController.navigate(R.id.action_loginFragment_to_chatsFragment)
+        navController.navigate(
+            R.id.chats_graph,
+            null,
+            NavOptions.Builder().setPopUpTo(R.id.chats_graph, true, false).build()
+        )
     }
 
     private fun setupNavGraph() {

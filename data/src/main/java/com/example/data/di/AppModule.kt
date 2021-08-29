@@ -7,6 +7,8 @@ import com.example.core.repositories.AuthenticationRepository
 import com.example.data.repositories.authentication.AuthenticationDataSource
 import com.example.data.repositories.authentication.AuthenticationDataSourceImp
 import com.example.data.repositories.authentication.AuthenticationRepositoryImp
+import com.quickblox.auth.session.QBSessionManager
+import com.quickblox.chat.QBChatService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +32,11 @@ class AppModule {
         return sharedPreferences.edit()
     }
 
+    @Provides
+    @Singleton
+    fun provideQbSessionManager(): QBSessionManager = QBSessionManager.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideQbChatService(): QBChatService = QBChatService.getInstance()
 }

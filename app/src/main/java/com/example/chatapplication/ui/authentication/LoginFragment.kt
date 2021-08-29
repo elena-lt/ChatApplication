@@ -1,5 +1,6 @@
 package com.example.chatapplication.ui.authentication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,15 +31,12 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tvDontHaveAccount.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
-        }
 
         handleOnClickEvents()
         subscribeToEvents()
     }
 
-    private fun handleOnClickEvents(){
+    private fun handleOnClickEvents() {
         binding.btnLogin.setOnClickListener {
             viewModel.setIntent(
                 AuthenticationStateEvent.LoginUser(
@@ -46,10 +44,16 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                     binding.edtPassword.text.toString()
                 )
             )
+        }
 
+        binding.tvDontHaveAccount.setOnClickListener {
+            binding.edtPassword.text?.clear()
+            binding.edtEmail.text?.clear()
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     private fun subscribeToEvents() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {

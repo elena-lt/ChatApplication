@@ -10,25 +10,22 @@ import com.quickblox.auth.session.QBSessionParameters
 import javax.inject.Inject
 
 class SessionManger @Inject constructor(
+    private val qbSessionManager: QBSessionManager,
     private val sharedPreferences: SharedPreferences,
     val sharedPreferencesEditor: SharedPreferences.Editor
 ) {
 
     private val _currUser = MutableLiveData<String>()
-    val curruser: LiveData<String> = _currUser
+    val currUser: LiveData<String> = _currUser
 
     companion object {
         const val SP_USER_LOGIN = ""
         const val SP_ACCESS_TOKEN = ""
             }
 
-    val qbSessionManager = QBSessionManager.getInstance()
-
     val listener = SharedPreferences.OnSharedPreferenceChangeListener{sharedPreferences, key ->
-        Log.d("AppDebug", "some shared preferences data changed: key: ${key}")
         when (key) {
             SP_USER_LOGIN -> {
-                Log.d("SESSION_MANAGER", "onSharedPreferenceChanged: user login changed")
                 _currUser.value = sharedPreferences.getString(SP_USER_LOGIN, null)
             }
         }
@@ -36,27 +33,22 @@ class SessionManger @Inject constructor(
 
     fun login(userLogin: String) {
         sharedPreferencesEditor.putString(SP_USER_LOGIN, userLogin).apply()
-        Log.d("SESSION_MANAGER", "logging in ....$userLogin")
     }
 
     fun logout() {
         sharedPreferencesEditor.putString(SP_USER_LOGIN, null).apply()
         sharedPreferencesEditor.putString(SP_ACCESS_TOKEN, null).apply()
-        Log.d("SESSION_MANAGER", "logging out: ")
     }
 
     fun registerListener(){
-        Log.d("SESSION_MANAGER", "registerListener: ")
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
     }
 
     fun unregister(){
-        Log.d("SESSION_MANAGER", "unregister: ")
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     fun createSessionManagerListener() {
-        Log.d("SESSION_MANAGER", "createSessionManagerListener created")
         qbSessionManager.addListener(object : QBSessionManager.QBSessionListener {
             override fun onSessionCreated(session: QBSession) {
                 // calls when session was created firstly or after it has been expired

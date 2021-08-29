@@ -1,5 +1,6 @@
 package com.example.chatapplication.ui.main.chats
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,20 +53,23 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
 
         super.onResume()
     }
+
     override fun onPause() {
 
         super.onPause()
     }
+
     private fun handleOnClickEvents() {
         binding.btnStartNewChat.setOnClickListener {
             findNavController().navigate(R.id.action_chatsFragment_to_newChatFragment)
         }
 
         binding.account.setOnClickListener {
-            findNavController().navigate(R.id.action_chatsFragment_to_accountFragment)
+            findNavController().navigate(R.id.accountFragment)
         }
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     private fun subscribeToObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {

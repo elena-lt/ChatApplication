@@ -14,9 +14,7 @@
             app:destination="@id/registrationFragment" />
         <action
             android:id="@+id/action_loginFragment_to_chatsFragment"
-            app:destination="@id/chatsFragment"
-            app:popUpTo="@id/chatsFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/chats_graph" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -24,40 +22,47 @@
         android:label="RegistrationFragment" >
         <action
             android:id="@+id/action_registrationFragment_to_chatsFragment"
-            app:destination="@id/chatsFragment" />
+            app:destination="@id/chats_graph" />
     </fragment>
-    <fragment
-        android:id="@+id/chatsFragment"
-        android:name="com.example.chatapplication.ui.main.chats.ChatsFragment"
-        android:label="fragment_chats"
-        tools:layout="@layout/fragment_chats" >
+    <navigation android:id="@+id/chats_graph"
+        app:startDestination="@id/chatsFragment">
+        <fragment
+            android:id="@+id/newChatFragment"
+            android:name="com.example.chatapplication.ui.main.chats.NewChatFragment"
+            android:label="fragment_new_chat"
+            tools:layout="@layout/fragment_new_chat">
+            <action
+                android:id="@+id/action_newChatFragment_to_activeChatFragment"
+                app:destination="@id/activeChatFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/chatsFragment"
+            android:name="com.example.chatapplication.ui.main.chats.ChatsFragment"
+            android:label="fragment_chats"
+            tools:layout="@layout/fragment_chats">
+            <action
+                android:id="@+id/action_chatsFragment_to_newChatFragment"
+                app:destination="@id/newChatFragment" />
+            <action
+                android:id="@+id/action_chatsFragment_to_activeChatFragment"
+                app:destination="@id/activeChatFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/activeChatFragment"
+            android:name="com.example.chatapplication.ui.main.chats.ActiveChatFragment"
+            android:label="fragment_active_chat"
+            tools:layout="@layout/fragment_active_chat" />
         <action
-            android:id="@+id/action_chatsFragment_to_newChatFragment"
-            app:destination="@id/newChatFragment" />
-        <action
-            android:id="@+id/action_chatsFragment_to_activeChatFragment"
-            app:destination="@id/activeChatFragment" />
-        <action
-            android:id="@+id/action_chatsFragment_to_accountFragment"
+            android:id="@+id/action_global_accountFragment2"
             app:destination="@id/accountFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/newChatFragment"
-        android:name="com.example.chatapplication.ui.main.chats.NewChatFragment"
-        android:label="fragment_new_chat"
-        tools:layout="@layout/fragment_new_chat" >
-        <action
-            android:id="@+id/action_newChatFragment_to_activeChatFragment"
-            app:destination="@id/activeChatFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/activeChatFragment"
-        android:name="com.example.chatapplication.ui.main.chats.ActiveChatFragment"
-        android:label="fragment_active_chat"
-        tools:layout="@layout/fragment_active_chat" />
+    </navigation>
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.chatapplication.ui.main.account.AccountFragment"
         android:label="fragment_account"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment2_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>

@@ -1,5 +1,6 @@
 package com.example.chatapplication.ui.authentication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,8 +31,14 @@ class RegistrationFragment : BaseAuthFragment<FragmentRegistrationBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         subscribeToObservers()
+        handleOnClickEvents()
+    }
 
+    private fun handleOnClickEvents(){
         binding.tvAlreadyHaveAccount.setOnClickListener {
+            binding.edtEmail.text?.clear()
+            binding.edtPassword.text?.clear()
+            binding.edtUsername.text?.clear()
             findNavController().popBackStack()
         }
 
@@ -40,6 +47,7 @@ class RegistrationFragment : BaseAuthFragment<FragmentRegistrationBinding>() {
         }
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     private fun subscribeToObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {

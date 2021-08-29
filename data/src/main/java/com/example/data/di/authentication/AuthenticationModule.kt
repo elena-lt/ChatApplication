@@ -5,6 +5,7 @@ import com.example.data.repositories.authentication.AuthenticationDataSource
 import com.example.data.repositories.authentication.AuthenticationDataSourceImp
 import com.example.data.repositories.authentication.AuthenticationRepositoryImp
 import com.example.data.sessionManager.SessionManger
+import com.quickblox.chat.QBChatService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +23,6 @@ class AuthenticationModule {
 
     @Provides
     @Singleton
-    fun provideAutheticationDataSource(sessionManger: SessionManger): AuthenticationDataSource =
-        AuthenticationDataSourceImp(sessionManger)
+    fun provideAuthenticationDataSource(sessionManger: SessionManger, qbChatService: QBChatService): AuthenticationDataSource =
+        AuthenticationDataSourceImp(sessionManger, qbChatService)
 }
