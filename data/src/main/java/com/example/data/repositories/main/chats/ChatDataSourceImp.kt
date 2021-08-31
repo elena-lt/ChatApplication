@@ -9,12 +9,10 @@ import com.example.core.utils.DataState
 import com.example.data.mappers.ChatDialogMapper
 import com.example.data.mappers.ChatMessageMapper
 import com.example.data.mappers.UserMapper
-import com.example.data.utils.Const
 import com.example.data.utils.Const.MESSAGE_DELIVERED
 import com.example.data.utils.Const.MESSAGE_NOT_DELIVERED
 import com.example.data.utils.Const.TAG
 import com.example.data.utils.Const.UNKNOWN_ERROR
-import com.quickblox.chat.QBChat
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBRestChatService
 import com.quickblox.chat.listeners.QBChatDialogMessageSentListener
@@ -25,46 +23,62 @@ import com.quickblox.chat.request.QBMessageGetBuilder
 import com.quickblox.chat.utils.DialogUtils
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
-import com.quickblox.core.request.QBRequestGetBuilder
 import com.quickblox.users.QBUsers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
-import org.jivesoftware.smack.SmackException
-import java.lang.NullPointerException
 import javax.inject.Inject
-import kotlin.math.log
 
 @ExperimentalCoroutinesApi
 class ChatDataSourceImp @Inject constructor() : ChatsDataSource {
 
-    override suspend fun loadAllChats(): Flow<DataState<MutableList<ChatDialogDomain>>> = flow {
-        emit(DataState.LOADING(true))
+    override suspend fun loadAllChats(): Flow<DataState<MutableList<ChatDialogDomain>>> {
 
-        kotlin.runCatching {
-            val requestBuilder = QBRequestGetBuilder()
-            requestBuilder.limit = 50
-//            requestBuilder.skip = 100
-//            requestBuilder.sortAsc("last_message_date_sent")
-            QBRestChatService.getChatDialogs(null, requestBuilder).perform()
-        }.onSuccess {
-            it?.let {
-                val chatList = it.map { chatDialog ->
-                    ChatDialogMapper.toChatDialogDomain(chatDialog)
-                }.toMutableList()
-                emit(DataState.SUCCESS(data = chatList))
-            } ?: emit(
-                DataState.SUCCESS<MutableList<ChatDialogDomain>>(
-                    null,
-                    errorMessage = "Empty list"
-                )
-            )
-
-        }.onFailure {
-            emit(DataState.ERROR<MutableList<ChatDialogDomain>>(it.message ?: "UNKNOWN ERROR"))
-        }
+        TODO()
+//        val requestBuilder = QBRequestGetBuilder()
+//        requestBuilder.limit = 50
+//
+//        return networkBoundResource(
+//            query = {
+//
+//            },
+//            fetch = {
+//                QBRestChatService.getChatDialogs(null, requestBuilder).perform()
+//            },
+//            saveFetchResult = {
+//
+//            }
+//        )
     }
+
+
+//    override suspend fun loadAllChats(): Flow<DataState<MutableList<ChatDialogDomain>>> = flow {
+//        emit(DataState.LOADING(true))
+//
+//        kotlin.runCatching {
+//            val requestBuilder = QBRequestGetBuilder()
+//            requestBuilder.limit = 50
+////            requestBuilder.skip = 100
+////            requestBuilder.sortAsc("last_message_date_sent")
+//            QBRestChatService.getChatDialogs(null, requestBuilder).perform()
+//        }.onSuccess {
+//            it?.let {
+//                val chatList = it.map { chatDialog ->
+//                    ChatDialogMapper.toChatDialogDomain(chatDialog)
+//                }.toMutableList()
+//                emit(DataState.SUCCESS(data = chatList))
+//            } ?: emit(
+//                DataState.SUCCESS<MutableList<ChatDialogDomain>>(
+//                    null,
+//                    errorMessage = "Empty list"
+//                )
+//            )
+//
+//        }.onFailure {
+//            emit(DataState.ERROR<MutableList<ChatDialogDomain>>(it.message ?: "UNKNOWN ERROR"))
+//        }
+//    }
 
     override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> = flow {
 

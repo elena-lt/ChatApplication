@@ -5,6 +5,8 @@ object Const {
 
     const val UNKNOWN_ERROR = "UNKNOWN ERROR"
 
+    const val DATABASE_NAME = "app_db"
+
     //Message deliver
     const val MESSAGE_DELIVERED ="delivered"
     const val MESSAGE_NOT_DELIVERED ="not delivered"

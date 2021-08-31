@@ -3,7 +3,6 @@ package com.example.data.repositories.main.account
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Bundle
 import android.util.Log
 import com.example.core.models.UserDomain
 import com.example.core.utils.DataState
@@ -12,15 +11,11 @@ import com.example.data.utils.Const.SP_USER_ID
 import com.example.data.utils.Const.TAG
 import com.example.data.utils.Const.UNKNOWN_ERROR
 import com.quickblox.content.QBContent
-import com.quickblox.core.QBEntityCallback
-import com.quickblox.core.exception.QBResponseException
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
-import java.io.InputStream
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
