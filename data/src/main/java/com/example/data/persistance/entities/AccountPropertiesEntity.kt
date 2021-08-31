@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "account_properties")
-data class AccountProperties(
+data class AccountPropertiesEntity(
 
     @PrimaryKey(autoGenerate = false)
     val id: Int,

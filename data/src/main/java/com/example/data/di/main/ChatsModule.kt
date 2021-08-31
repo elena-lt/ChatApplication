@@ -1,6 +1,8 @@
 package com.example.data.di.main
 
 import com.example.core.repositories.ChatsRepository
+import com.example.data.persistance.AppDatabase
+import com.example.data.persistance.ChatsDao
 import com.example.data.repositories.main.chats.ChatDataSourceImp
 import com.example.data.repositories.main.chats.ChatsDataSource
 import com.example.data.repositories.main.chats.ChatsRepositoryImp
@@ -14,6 +16,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ChatsModule {
+
+    @Provides
+    @Singleton
+    fun provideChatsDao(database: AppDatabase): ChatsDao = database.getChatDao()
 
     @ExperimentalCoroutinesApi
     @Provides

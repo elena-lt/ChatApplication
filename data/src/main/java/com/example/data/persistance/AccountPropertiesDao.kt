@@ -5,13 +5,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.data.persistance.entities.AccountProperties
+import com.example.data.persistance.entities.AccountPropertiesEntity
 
 @Dao
 interface AccountPropertiesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAccountProperties(accountProperties: AccountProperties)
+    suspend fun insertAccountProperties(accountProperties: AccountPropertiesEntity)
+
+    @Query ("SELECT * FROM account_properties WHERE id =:userId")
+    suspend fun searchByUserId(userId: Int): AccountPropertiesEntity
 
     @Query(
         """
