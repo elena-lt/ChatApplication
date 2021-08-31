@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.data.utils.Const.SP_USER_ID
+import com.example.data.utils.Const.SP_USER_LOGIN
 import com.quickblox.auth.session.QBSession
 import com.quickblox.auth.session.QBSessionManager
 import com.quickblox.auth.session.QBSessionParameters
@@ -14,37 +16,37 @@ class SessionManger @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     val sharedPreferencesEditor: SharedPreferences.Editor
 ) {
-
-    private val _currUser = MutableLiveData<String>()
+    private val _currUser = MutableLiveData<String>(sharedPreferences.getString(SP_USER_LOGIN, null))
     val currUser: LiveData<String> = _currUser
 
-    companion object {
-        const val SP_USER_LOGIN = ""
-        const val SP_ACCESS_TOKEN = ""
-            }
-
-    val listener = SharedPreferences.OnSharedPreferenceChangeListener{sharedPreferences, key ->
+    val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        Log.d("AppDebug", "listener: some data changed ${key}")
         when (key) {
             SP_USER_LOGIN -> {
+                Log.d("AppDebug", "listener: SP_USER_LOGIN data changed")
                 _currUser.value = sharedPreferences.getString(SP_USER_LOGIN, null)
             }
         }
     }
 
-    fun login(userLogin: String) {
+    fun login(userId: Int, userLogin: String) {
+        sharedPreferencesEditor.putInt(SP_USER_ID, userId).apply()
+        Log.d("AppDebug", "login: apply $userLogin")
         sharedPreferencesEditor.putString(SP_USER_LOGIN, userLogin).apply()
     }
 
     fun logout() {
-        sharedPreferencesEditor.putString(SP_USER_LOGIN, null).apply()
-        sharedPreferencesEditor.putString(SP_ACCESS_TOKEN, null).apply()
+        sharedPreferencesEditor.clear().apply()
+//        sharedPreferencesEditor.putString(SP_USER_LOGIN, null).apply()
+//        sharedPreferencesEditor.putString(SP_ACCESS_TOKEN, null).apply()
     }
 
-    fun registerListener(){
+    fun registerListener() {
+        Log.d("AppDebug", "registerListener: listener registered")
         sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
     }
 
-    fun unregister(){
+    fun unregister() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
@@ -60,7 +62,8 @@ class SessionManger @Inject constructor(
                 // QBSessionParameters stores information about signed in user.
                 val userLogin = sessionParameters.userLogin
                 val accessToken = sessionParameters.accessToken
-                login(userLogin)
+                val userId = sessionParameters.userId
+                login(userId, userLogin)
 
                 Log.d(
                     "SESSION_MANAGER",
@@ -70,18 +73,20 @@ class SessionManger @Inject constructor(
 
             override fun onSessionDeleted() {
                 // calls when user signed Out or session was deleted
-                val sessionParameters = qbSessionManager.sessionParameters
                 logout()
 
             }
 
             override fun onSessionRestored(session: QBSession) {
                 // calls when session was restored from local storage
+                login(
+                    qbSessionManager.sessionParameters.userId,
+                    qbSessionManager.sessionParameters.userLogin
+                )
                 Log.d(
                     "SESSION_MANAGER",
                     "onSessionRestored: ${session.token}, ${qbSessionManager.sessionParameters.userLogin}"
                 )
-                login( session.token)
             }
 
             override fun onSessionExpired() {

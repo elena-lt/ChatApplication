@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.account.AccountFragment">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/user_profile_image"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:src="@mipmap/ic_launcher"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.48000002"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Round"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/poppins"
+        android:textColor="#516091"
+        app:layout_constraintEnd_toEndOf="@+id/user_profile_image"
+        app:layout_constraintStart_toStartOf="@+id/user_profile_image"
+        app:layout_constraintTop_toBottomOf="@id/user_profile_image"
+        tools:layout_editor_absoluteY="187dp"
+        tools:text="User Name" />
+
     <Button
         android:id="@+id/logout"
         android:layout_width="wrap_content"
@@ -14,5 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

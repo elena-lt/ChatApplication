@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
         setupNavGraph()
 
+        Log.d(TAG, "onCreate: ${sessionManager.currUser.value}")
+
         initSessionManager()
         setupQuickBlox()
         subscribeToObservers()
@@ -49,7 +51,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
     private fun subscribeToObservers() {
         sessionManager.currUser.observe(this, { userLogin ->
-            if (!userLogin.isNullOrBlank()) {
+            Log.d(TAG, "subscribeToObservers: $userLogin")
+            if (userLogin.isNotEmpty() && userLogin.isNotBlank()) {
                 navigateToChatsFragment()
             } else {
                 navigateToLoginFragment()

@@ -6,6 +6,13 @@ import com.example.core.models.UserDomain
 object UserMapper {
 
     fun toUser(userDomain: UserDomain): Models.User {
-        return Models.User (userDomain.id, userDomain.login, userDomain.fullName, userDomain.email, userDomain.externalId)
+        return Models.User(
+            userDomain.id,
+            userDomain.login,
+            userDomain.fullName,
+            userDomain.email,
+            userDomain.blobId,
+            userDomain.externalId
+        )
     }
 }

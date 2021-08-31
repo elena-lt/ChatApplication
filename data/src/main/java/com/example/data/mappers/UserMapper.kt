@@ -11,6 +11,7 @@ object UserMapper {
             login = user?.login,
             fullName = user?.fullName,
             email = user?.email,
+            blobId = null,
             externalId = user?.externalId
         )
     }

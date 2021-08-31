@@ -1,5 +1,7 @@
 package com.example.chatapplication.models
 
+import android.graphics.Bitmap
+
 sealed class Models {
 
     data class User(
@@ -7,6 +9,7 @@ sealed class Models {
         val login: String? = null,
         val fullName: String? = null,
         val email: String? = null,
+        val blobId: Bitmap? = null,
         val externalId: String? = null,
 
         ) : Models()
