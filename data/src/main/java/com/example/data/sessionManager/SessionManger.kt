@@ -16,8 +16,8 @@ class SessionManger @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     val sharedPreferencesEditor: SharedPreferences.Editor
 ) {
-    private val _currUser = MutableLiveData<String>(sharedPreferences.getString(SP_USER_LOGIN, null))
-    val currUser: LiveData<String> = _currUser
+    private val _currUser = MutableLiveData<String?>(sharedPreferences.getString(SP_USER_LOGIN, null))
+    val currUser: LiveData<String?> = _currUser
 
     val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         Log.d("AppDebug", "listener: some data changed ${key}")

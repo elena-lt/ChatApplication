@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Dao
 import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.FragmentChatsBinding
@@ -20,6 +21,7 @@ import com.example.chatapplication.ui.base.BaseChatsFragment
 import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
 import com.example.chatapplication.ui.main.chats.mvi.ChatsViewState
+import com.example.data.persistance.ChatsDao
 import com.quickblox.chat.QBChatService
 import com.quickblox.chat.QBIncomingMessagesManager
 import com.quickblox.chat.exception.QBChatException
@@ -29,10 +31,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @InternalCoroutinesApi
 @AndroidEntryPoint
 class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener {
+
+    @Inject
+    lateinit var chatDao: ChatsDao
 
     override val bindingInflater: (LayoutInflater) -> ViewBinding
         get() = FragmentChatsBinding::inflate

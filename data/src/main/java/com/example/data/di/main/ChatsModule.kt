@@ -24,7 +24,7 @@ class ChatsModule {
     @ExperimentalCoroutinesApi
     @Provides
     @Singleton
-    fun provideChatDataSource(): ChatsDataSource = ChatDataSourceImp()
+    fun provideChatDataSource(chatsDao: ChatsDao): ChatsDataSource = ChatDataSourceImp(chatsDao)
 
     @Provides
     @Singleton

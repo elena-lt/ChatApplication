@@ -51,8 +51,7 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
     private fun subscribeToObservers() {
         sessionManager.currUser.observe(this, { userLogin ->
-            Log.d(TAG, "subscribeToObservers: $userLogin")
-            if (userLogin.isNotEmpty() && userLogin.isNotBlank()) {
+            if (userLogin != null && userLogin.isNotBlank()) {
                 navigateToChatsFragment()
             } else {
                 navigateToLoginFragment()

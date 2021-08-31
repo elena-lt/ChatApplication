@@ -9,6 +9,9 @@ import com.example.core.utils.DataState
 import com.example.data.mappers.ChatDialogMapper
 import com.example.data.mappers.ChatMessageMapper
 import com.example.data.mappers.UserMapper
+import com.example.data.persistance.ChatsDao
+import com.example.data.persistance.entities.ChatEntity
+import com.example.data.repositories.networkBoundResource
 import com.example.data.utils.Const.MESSAGE_DELIVERED
 import com.example.data.utils.Const.MESSAGE_NOT_DELIVERED
 import com.example.data.utils.Const.TAG
@@ -23,33 +26,47 @@ import com.quickblox.chat.request.QBMessageGetBuilder
 import com.quickblox.chat.utils.DialogUtils
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
+import com.quickblox.core.request.QBRequestGetBuilder
 import com.quickblox.users.QBUsers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.jivesoftware.smack.chat.ChatManager
 import javax.inject.Inject
+import kotlin.math.log
 
 @ExperimentalCoroutinesApi
-class ChatDataSourceImp @Inject constructor() : ChatsDataSource {
+class ChatDataSourceImp @Inject constructor(
+    private val chatsDao: ChatsDao
+) : ChatsDataSource {
 
     override suspend fun loadAllChats(): Flow<DataState<MutableList<ChatDialogDomain>>> {
 
-        TODO()
-//        val requestBuilder = QBRequestGetBuilder()
-//        requestBuilder.limit = 50
-//
-//        return networkBoundResource(
-//            query = {
-//
-//            },
-//            fetch = {
-//                QBRestChatService.getChatDialogs(null, requestBuilder).perform()
-//            },
-//            saveFetchResult = {
-//
-//            }
-//        )
+        val requestBuilder = QBRequestGetBuilder()
+        requestBuilder.limit = 50
+
+        return networkBoundResource(
+            query = {
+
+                chatsDao.getAllChats().map { list ->
+                    list.map {
+                        ChatDialogMapper.toChatDialogDomain(it)
+                    }.toMutableList()
+                }
+            },
+            fetch = {
+                QBRestChatService.getChatDialogs(null, requestBuilder).perform()
+            },
+            saveFetchResult = {
+                val listToSave = listOf<ChatEntity>()
+                for (item in it) {
+                    val newItem = ChatDialogMapper.toChatEntity(item)
+                    chatsDao.insertChats(newItem)
+
+                }
+            }
+        )
     }
 
 
@@ -68,6 +85,19 @@ class ChatDataSourceImp @Inject constructor() : ChatsDataSource {
 //                    ChatDialogMapper.toChatDialogDomain(chatDialog)
 //                }.toMutableList()
 //                emit(DataState.SUCCESS(data = chatList))
+//
+//                for (item in it){
+//                    val newItem = ChatDialogMapper.toChatEntity(item)
+//                    chatsDao.insertChats(newItem)
+//                    Log.d(TAG, "loadAllChats: inserting chat..... ${item.dialogId}")
+//
+//                }
+//
+//                val mutableList = mutableListOf<ChatEntity>()
+//                val list = chatsDao.getChats().map {
+//                        mutableList.add(it)
+//                }
+//                Log.d(TAG, "SAVED CHAT ENTITY: ${mutableList}")
 //            } ?: emit(
 //                DataState.SUCCESS<MutableList<ChatDialogDomain>>(
 //                    null,
