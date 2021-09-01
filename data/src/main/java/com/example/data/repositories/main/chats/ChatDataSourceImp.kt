@@ -12,6 +12,7 @@ import com.example.data.mappers.UserMapper
 import com.example.data.persistance.ChatsDao
 import com.example.data.persistance.entities.ChatEntity
 import com.example.data.repositories.networkBoundResource
+import com.example.data.utils.ConnectivityManager
 import com.example.data.utils.Const.MESSAGE_DELIVERED
 import com.example.data.utils.Const.MESSAGE_NOT_DELIVERED
 import com.example.data.utils.Const.TAG
@@ -38,6 +39,7 @@ import kotlin.math.log
 
 @ExperimentalCoroutinesApi
 class ChatDataSourceImp @Inject constructor(
+    private val connectivityManager: ConnectivityManager,
     private val chatsDao: ChatsDao
 ) : ChatsDataSource {
 
@@ -48,7 +50,6 @@ class ChatDataSourceImp @Inject constructor(
 
         return networkBoundResource(
             query = {
-
                 chatsDao.getAllChats().map { list ->
                     list.map {
                         ChatDialogMapper.toChatDialogDomain(it)
@@ -65,50 +66,12 @@ class ChatDataSourceImp @Inject constructor(
                     chatsDao.insertChats(newItem)
 
                 }
-            }
+            },
+            shouldFetch = {
+                Log.d(TAG, "loadAllChats: ${connectivityManager.isConnectedToInternet}")
+                connectivityManager.isConnectedToInternet }
         )
     }
-
-
-//    override suspend fun loadAllChats(): Flow<DataState<MutableList<ChatDialogDomain>>> = flow {
-//        emit(DataState.LOADING(true))
-//
-//        kotlin.runCatching {
-//            val requestBuilder = QBRequestGetBuilder()
-//            requestBuilder.limit = 50
-////            requestBuilder.skip = 100
-////            requestBuilder.sortAsc("last_message_date_sent")
-//            QBRestChatService.getChatDialogs(null, requestBuilder).perform()
-//        }.onSuccess {
-//            it?.let {
-//                val chatList = it.map { chatDialog ->
-//                    ChatDialogMapper.toChatDialogDomain(chatDialog)
-//                }.toMutableList()
-//                emit(DataState.SUCCESS(data = chatList))
-//
-//                for (item in it){
-//                    val newItem = ChatDialogMapper.toChatEntity(item)
-//                    chatsDao.insertChats(newItem)
-//                    Log.d(TAG, "loadAllChats: inserting chat..... ${item.dialogId}")
-//
-//                }
-//
-//                val mutableList = mutableListOf<ChatEntity>()
-//                val list = chatsDao.getChats().map {
-//                        mutableList.add(it)
-//                }
-//                Log.d(TAG, "SAVED CHAT ENTITY: ${mutableList}")
-//            } ?: emit(
-//                DataState.SUCCESS<MutableList<ChatDialogDomain>>(
-//                    null,
-//                    errorMessage = "Empty list"
-//                )
-//            )
-//
-//        }.onFailure {
-//            emit(DataState.ERROR<MutableList<ChatDialogDomain>>(it.message ?: "UNKNOWN ERROR"))
-//        }
-//    }
 
     override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> = flow {
 

@@ -9,6 +9,7 @@ import com.example.data.persistance.AppDatabase
 import com.example.data.repositories.authentication.AuthenticationDataSource
 import com.example.data.repositories.authentication.AuthenticationDataSourceImp
 import com.example.data.repositories.authentication.AuthenticationRepositoryImp
+import com.example.data.utils.ConnectivityManager
 import com.example.data.utils.Const.DATABASE_NAME
 import com.quickblox.auth.session.QBSessionManager
 import com.quickblox.chat.QBChatService
@@ -33,6 +34,12 @@ class AppModule {
     @Singleton
     fun provideSharedPreferencesEditor(sharedPreferences: SharedPreferences): SharedPreferences.Editor {
         return sharedPreferences.edit()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return ConnectivityManager(context)
     }
 
     @Provides

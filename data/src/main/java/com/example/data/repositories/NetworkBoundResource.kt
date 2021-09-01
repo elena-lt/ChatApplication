@@ -1,6 +1,7 @@
 package com.example.data.repositories
 
 import com.example.core.utils.DataState
+import com.example.data.utils.ConnectivityManager
 import kotlinx.coroutines.flow.*
 
 inline fun <ResultType, RequestType> networkBoundResource(
@@ -8,7 +9,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
     crossinline fetch: suspend () -> RequestType,
     crossinline saveFetchResult: suspend (RequestType) -> Unit,
-    crossinline shouldFetch: (ResultType) -> Boolean = { false }
+    noinline shouldFetch: (ResultType) -> Boolean
 ) = flow {
 
     val data = query().first()
@@ -34,3 +35,4 @@ inline fun <ResultType, RequestType> networkBoundResource(
     emitAll(flow)
 
 }
+

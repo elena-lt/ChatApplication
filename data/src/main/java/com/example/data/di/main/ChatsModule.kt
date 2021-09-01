@@ -6,6 +6,7 @@ import com.example.data.persistance.ChatsDao
 import com.example.data.repositories.main.chats.ChatDataSourceImp
 import com.example.data.repositories.main.chats.ChatsDataSource
 import com.example.data.repositories.main.chats.ChatsRepositoryImp
+import com.example.data.utils.ConnectivityManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +25,10 @@ class ChatsModule {
     @ExperimentalCoroutinesApi
     @Provides
     @Singleton
-    fun provideChatDataSource(chatsDao: ChatsDao): ChatsDataSource = ChatDataSourceImp(chatsDao)
+    fun provideChatDataSource(
+        connectivityManager: ConnectivityManager,
+        chatsDao: ChatsDao
+    ): ChatsDataSource = ChatDataSourceImp(connectivityManager, chatsDao)
 
     @Provides
     @Singleton
