@@ -13,8 +13,8 @@ interface AccountPropertiesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAccountProperties(accountProperties: AccountPropertiesEntity)
 
-    @Query ("SELECT * FROM account_properties WHERE id =:userId")
-    suspend fun searchByUserId(userId: Int): AccountPropertiesEntity
+    @Query("SELECT * FROM account_properties WHERE id =:userId")
+    suspend fun searchByUserId(userId: Int): AccountPropertiesEntity?
 
     @Query(
         """
@@ -35,4 +35,17 @@ interface AccountPropertiesDao {
         profileImg: Bitmap?,
         externalId: String
     )
+
+    suspend fun updateOrInsert(accountProp: AccountPropertiesEntity) {
+        val account = searchByUserId(accountProp.id)
+        if (account ==null) insertAccountProperties(accountProp)
+        else updateAccountProperties(
+            accountProp.id,
+            accountProp.login,
+            accountProp.email,
+            accountProp.fullName,
+            accountProp.profileImg,
+            accountProp.externalId ?: ""
+        )
+    }
 }

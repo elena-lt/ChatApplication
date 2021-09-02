@@ -11,7 +11,7 @@ import com.example.data.mappers.ChatMessageMapper
 import com.example.data.mappers.UserMapper
 import com.example.data.persistance.ChatsDao
 import com.example.data.persistance.entities.ChatEntity
-import com.example.data.repositories.networkBoundResource
+import com.example.data.repositories.networkBoundResourceFun
 import com.example.data.utils.ConnectivityManager
 import com.example.data.utils.Const.MESSAGE_DELIVERED
 import com.example.data.utils.Const.MESSAGE_NOT_DELIVERED
@@ -48,29 +48,30 @@ class ChatDataSourceImp @Inject constructor(
         val requestBuilder = QBRequestGetBuilder()
         requestBuilder.limit = 50
 
-        return networkBoundResource(
-            query = {
-                chatsDao.getAllChats().map { list ->
-                    list.map {
-                        ChatDialogMapper.toChatDialogDomain(it)
-                    }.toMutableList()
-                }
-            },
-            fetch = {
-                QBRestChatService.getChatDialogs(null, requestBuilder).perform()
-            },
-            saveFetchResult = {
-                val listToSave = listOf<ChatEntity>()
-                for (item in it) {
-                    val newItem = ChatDialogMapper.toChatEntity(item)
-                    chatsDao.insertChats(newItem)
-
-                }
-            },
-            shouldFetch = {
-                Log.d(TAG, "loadAllChats: ${connectivityManager.isConnectedToInternet}")
-                connectivityManager.isConnectedToInternet }
-        )
+//        return networkBoundResourceFun(
+//            forceFetch = false,
+//            query = {
+//                chatsDao.getAllChats().map { list ->
+//                    list.map {
+//                        ChatDialogMapper.toChatDialogDomain(it)
+//                    }.toMutableList()
+//                }
+//            },
+//            fetch = {
+//                QBRestChatService.getChatDialogs(null, requestBuilder).perform()
+//            },
+//            saveFetchResult = {
+//                val listToSave = listOf<ChatEntity>()
+//                for (item in it) {
+//                    val newItem = ChatDialogMapper.toChatEntity(item)
+//                    chatsDao.insertChats(newItem)
+//
+//                }
+//            },
+//            shouldFetch = {
+//                Log.d(TAG, "loadAllChats: ${connectivityManager.isConnectedToInternet}")
+//                connectivityManager.isConnectedToInternet }
+//        )
     }
 
     override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> = flow {

@@ -1,5 +1,6 @@
 package com.example.chatapplication.ui.main.account
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.models.mapper.UserMapper
 import com.example.chatapplication.ui.base.BaseViewModel
@@ -32,10 +33,12 @@ class AccountViewModel
     fun changeProfileImage(image: File){
         viewModelScope.launch {
             changeProfileImg.invoke(image).collect { dataState ->
+                Log.d("AppDebug", "changeProfileImage: new dataState $dataState")
                 setDataState(dataState)
 
                 dataState.data?.let {
                     setViewState(currentState.copy(user = UserMapper.toUser(it), false))
+                    Log.d("AppDebug", "changeProfileImage: new view state set \n$currentState")
                 }
             }
         }

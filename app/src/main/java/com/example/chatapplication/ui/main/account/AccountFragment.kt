@@ -87,6 +87,7 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
                     viewModel.dataState.collect {
+                        Log.d("AppDebug", "subscribeToObservers: new data statet collected")
                         onStateChangeListener.onDataStateChanged(it)
                     }
                 }
@@ -94,6 +95,7 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
                 launch {
                     viewModel.viewState.collect { viewState ->
                         viewState.user?.let {
+                            Log.d("AppDebug", "subscribeToObservers: new view state collected")
                             updateProfileInfo(it)
                         }
                     }

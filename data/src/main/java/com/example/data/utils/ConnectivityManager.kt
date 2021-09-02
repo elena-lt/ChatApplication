@@ -1,11 +1,8 @@
 package com.example.data.utils
 
-import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.net.*
 import android.net.ConnectivityManager
-import android.os.Build
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

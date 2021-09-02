@@ -7,6 +7,7 @@ import com.example.data.persistance.AppDatabase
 import com.example.data.repositories.main.account.AccountDataSource
 import com.example.data.repositories.main.account.AccountDataSourceImp
 import com.example.data.repositories.main.account.AccountRepositoryImp
+import com.example.data.utils.ConnectivityManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,8 +25,12 @@ class AccountModule {
 
     @Provides
     @Singleton
-    fun provideAccountDataSource(sharedPreferences: SharedPreferences): AccountDataSource =
-        AccountDataSourceImp(sharedPreferences)
+    fun provideAccountDataSource(
+        connectivityManager: ConnectivityManager,
+        accountPropertiesDao: AccountPropertiesDao,
+        sharedPreferences: SharedPreferences
+    ): AccountDataSource =
+        AccountDataSourceImp(connectivityManager, accountPropertiesDao, sharedPreferences)
 
     @Provides
     @Singleton

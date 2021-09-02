@@ -16,7 +16,8 @@ class SessionManger @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     val sharedPreferencesEditor: SharedPreferences.Editor
 ) {
-    private val _currUser = MutableLiveData<String?>(sharedPreferences.getString(SP_USER_LOGIN, null))
+    private val _currUser =
+        MutableLiveData<String?>(sharedPreferences.getString(SP_USER_LOGIN, null))
     val currUser: LiveData<String?> = _currUser
 
     val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -30,9 +31,16 @@ class SessionManger @Inject constructor(
     }
 
     fun login(userId: Int, userLogin: String) {
-        sharedPreferencesEditor.putInt(SP_USER_ID, userId).apply()
-        Log.d("AppDebug", "login: apply $userLogin")
-        sharedPreferencesEditor.putString(SP_USER_LOGIN, userLogin).apply()
+        Log.d("AppDebug", "login: apply $userId, $userLogin")
+        val prevUserId = sharedPreferences.getInt(SP_USER_ID, -1)
+        val prevUserLogin = sharedPreferences.getString(SP_USER_LOGIN, null)
+
+        if (userId != prevUserId) {
+            sharedPreferencesEditor.putInt(SP_USER_ID, userId).apply()
+        }
+        if (userLogin != prevUserLogin) {
+            sharedPreferencesEditor.putString(SP_USER_LOGIN, userLogin).apply()
+        }
     }
 
     fun logout() {
