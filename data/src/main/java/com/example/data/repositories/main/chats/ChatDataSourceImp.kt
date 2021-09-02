@@ -11,7 +11,7 @@ import com.example.data.mappers.ChatMessageMapper
 import com.example.data.mappers.UserMapper
 import com.example.data.persistance.ChatsDao
 import com.example.data.persistance.entities.ChatEntity
-import com.example.data.repositories.networkBoundResourceFun
+import com.example.data.repositories.NetworkBoundResource
 import com.example.data.utils.ConnectivityManager
 import com.example.data.utils.Const.MESSAGE_DELIVERED
 import com.example.data.utils.Const.MESSAGE_NOT_DELIVERED
@@ -47,6 +47,42 @@ class ChatDataSourceImp @Inject constructor(
 
         val requestBuilder = QBRequestGetBuilder()
         requestBuilder.limit = 50
+
+        return object :
+            NetworkBoundResource<MutableList<ChatEntity>, MutableList<ChatDialogDomain>>(
+                connectivityManager
+            ) {
+            override fun forceFetch(): Boolean = false
+
+            override suspend fun loadFromDB(): DataState<MutableList<ChatDialogDomain>> {
+                val list = chatsDao.getChats().map {
+                    ChatDialogMapper.toChatDialogDomain(it)
+                }.toMutableList()
+                return DataState.SUCCESS(list)
+            }
+
+            override suspend fun createCall(): DataState<MutableList<ChatEntity>> {
+                var list: MutableList<ChatEntity>? = null
+                kotlin.runCatching {
+                    QBRestChatService.getChatDialogs(null, requestBuilder).perform()
+                }.onSuccess {
+                    list = it.map {
+                        ChatDialogMapper.toChatEntity(it)
+                    }.toMutableList()
+                }.onFailure {
+                    onFetchFailed(it.toString())
+                }
+                return DataState.SUCCESS(list)
+            }
+
+            override suspend fun saveFetchResult(data: MutableList<ChatEntity>?) {
+                data?.let {
+                    for (item in it) {
+                        chatsDao.insertChats(item)
+                    }
+                }
+            }
+        }.flow
 
 //        return networkBoundResourceFun(
 //            forceFetch = false,
