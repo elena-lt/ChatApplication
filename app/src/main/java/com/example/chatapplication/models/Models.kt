@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 sealed class Models {
 
     data class User(
-        val id: Int? = null,
-        val login: String? = null,
+        val id: Int,
+        val login: String,
         val fullName: String? = null,
         val email: String? = null,
         val blobId: Bitmap? = null,

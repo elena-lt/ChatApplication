@@ -14,6 +14,8 @@ import com.example.data.utils.ConnectivityManager
 import com.example.data.utils.Const.SP_USER_ID
 import com.example.data.utils.Const.TAG
 import com.quickblox.content.QBContent
+import com.quickblox.content.model.QBFile
+import com.quickblox.core.QBProgressCallback
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,15 +27,64 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+@ExperimentalCoroutinesApi
 class AccountDataSourceImp @Inject constructor(
     val connectivityManager: ConnectivityManager,
     val accountPropertiesDao: AccountPropertiesDao,
     private val sharedPreferences: SharedPreferences
 ) : AccountDataSource {
 
-    @ExperimentalCoroutinesApi
-    override suspend fun updateProfileImage(image: File)=
-          object : NetworkBoundResource<AccountPropertiesEntity, UserDomain>(connectivityManager) {
+    override suspend fun loadAccountProperties(): Flow<DataState<UserDomain>> {
+
+        val userId = sharedPreferences.getInt(SP_USER_ID, -1)
+
+        return object :
+            NetworkBoundResource<AccountPropertiesEntity, UserDomain>(connectivityManager) {
+
+            override suspend fun loadFromDB(): DataState<UserDomain> {
+                val user = accountPropertiesDao.searchByUserId(userId)?.let {
+                    UserMapper.toUserDomain(it)
+                }
+                Log.d(TAG, "loadFromDB: $user")
+                return DataState.SUCCESS(user)
+            }
+
+            override suspend fun createCall(): AccountPropertiesEntity? {
+                val qBUser = getUserById(userId)
+                 qBUser?.let { user ->
+                    user.fileId?.let {
+                        val image = downloadFiledId(it)
+                        return AccountPropertiesEntity(
+                            user.id,
+                            user.login,
+                            user.fullName,
+                            user.email,
+                            image,
+                            user.externalId
+                        )
+                    } ?: return AccountPropertiesEntity(
+                        user.id,
+                        user.login,
+                        user.fullName,
+                        user.email,
+                        null,
+                        user.externalId
+                    )
+                } ?: return null
+            }
+
+            override suspend fun saveFetchResult(data: AccountPropertiesEntity?) {
+                data?.let {
+                    Log.d(TAG, "saveFetchResult: ${it}")
+                    accountPropertiesDao.updateOrInsert(it)
+                }
+            }
+        }.flow
+    }
+
+    override suspend fun updateProfileImage(image: File) =
+        object :
+            NetworkBoundResource<AccountPropertiesEntity, UserDomain>(connectivityManager) {
             val userId = sharedPreferences.getInt(SP_USER_ID, -1)
 
             override fun forceFetch(): Boolean = true
@@ -53,7 +104,7 @@ class AccountDataSourceImp @Inject constructor(
                 )
             }
 
-            override suspend fun createCall(): DataState<AccountPropertiesEntity> {
+            override suspend fun createCall(): AccountPropertiesEntity? {
                 var accountProps: AccountPropertiesEntity? = null
                 val user = getUserById(userId)
 
@@ -87,7 +138,7 @@ class AccountDataSourceImp @Inject constructor(
                         onFetchFailed(it.toString())
                     }
                 }
-                return DataState.SUCCESS(accountProps)
+                return accountProps
             }
 
             override suspend fun saveFetchResult(data: AccountPropertiesEntity?) {
@@ -103,42 +154,23 @@ class AccountDataSourceImp @Inject constructor(
                     accountPropertiesDao.updateOrInsert(accountPropertiesEntity)
                 }
             }
+
             override fun onFetchFailed(throwable: String) {
                 Log.d(TAG, "onFetchFailed: something went wrong")
             }
         }.flow
 
-//    override suspend fun updateProfileImage(image: File): Flow<DataState<UserDomain>> = flow<DataState<UserDomain>> {
-//        emit(DataState.LOADING(true))
-//
-//        var updatedUser: UserDomain?
-//
-//        val userId = sharedPreferences.getInt(SP_USER_ID, -1)
-//        val user = getUserById(userId)
-//
-//        if (user != null) {
-//            kotlin.runCatching {
-//                QBContent.uploadFileTask(image, false, null).perform()
-//            }.onSuccess {
-//                user.fileId = it.id
-//                val uid = it.uid
-//                val query = updateUser(user)
-//                if (query != null) {
-//                    val imageBm = downloadFile(uid)
-//                    if (imageBm != null){
-//                        updatedUser = UserMapper.toUserDomain(query).copy(blobId = imageBm)
-//                        emit(DataState.SUCCESS(updatedUser))
-//                    }else{
-//                        emit(DataState.ERROR(UNKNOWN_ERROR))
-//                    }
-//                } else {
-//                    emit(DataState.ERROR(UNKNOWN_ERROR))
-//                }
-//            }.onFailure {
-//                emit(DataState.ERROR(it.message ?: UNKNOWN_ERROR))
-//            }
-//        }
-//    }
+    private suspend fun downloadFiledId(fileId: Int): Bitmap? {
+
+        return suspendCoroutine { cont ->
+            kotlin.runCatching {
+                QBContent.downloadFileById(fileId) { Log.d(TAG, "onProgressUpdate: $it") }.perform()
+
+            }.onSuccess {
+                cont.resume(BitmapFactory.decodeStream(it))
+            }.onFailure { cont.resumeWithException(it) }
+        }
+    }
 
     private suspend fun downloadFile(uid: String): Bitmap? {
 
@@ -195,5 +227,4 @@ class AccountDataSourceImp @Inject constructor(
             Log.d("AppDebug", "logout: $it")
         }
     }
-
 }

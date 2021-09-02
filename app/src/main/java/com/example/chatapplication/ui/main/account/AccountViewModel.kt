@@ -2,10 +2,12 @@ package com.example.chatapplication.ui.main.account
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.chatapplication.models.Models
 import com.example.chatapplication.models.mapper.UserMapper
 import com.example.chatapplication.ui.base.BaseViewModel
 import com.example.chatapplication.ui.main.account.mvi.AccountStateEvent
 import com.example.chatapplication.ui.main.account.mvi.AccountViewState
+import com.example.core.usecases.main.account.LoadAccountPropertiesUseCase
 import com.example.core.usecases.main.account.LogoutUseCase
 import com.example.core.usecases.main.account.UpdateProfileImageUseCase
 import com.example.core.utils.DataState
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AccountViewModel
     @Inject constructor(
+        private val loadAccountProperties: LoadAccountPropertiesUseCase,
         private val changeProfileImg: UpdateProfileImageUseCase,
         private val logout: LogoutUseCase
     ): BaseViewModel<AccountViewState, AccountStateEvent, DataState<*>>() {
@@ -27,18 +30,29 @@ class AccountViewModel
     override fun handleStateEvent(stateEvent: AccountStateEvent) {
         when (stateEvent){
             is AccountStateEvent.Logout -> logout()
+            is AccountStateEvent.LoadAccountProperties -> loadAccountProperties()
         }
     }
 
     fun changeProfileImage(image: File){
         viewModelScope.launch {
             changeProfileImg.invoke(image).collect { dataState ->
-                Log.d("AppDebug", "changeProfileImage: new dataState $dataState")
                 setDataState(dataState)
 
                 dataState.data?.let {
                     setViewState(currentState.copy(user = UserMapper.toUser(it), false))
-                    Log.d("AppDebug", "changeProfileImage: new view state set \n$currentState")
+                }
+            }
+        }
+    }
+
+    private fun loadAccountProperties(){
+        viewModelScope.launch {
+            loadAccountProperties.invoke().collect { dataState ->
+                setDataState(dataState)
+
+                dataState.data?.let {
+                    setViewState(currentState.copy(user = UserMapper.toUser(it), false))
                 }
             }
         }

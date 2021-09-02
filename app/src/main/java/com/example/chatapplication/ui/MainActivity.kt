@@ -76,11 +76,9 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
                   when (it){
                       is ConnectivityManager.NetworkStatus.Available -> {
                           binding.tvNetworkStatus.visibility = View.GONE
-                          Log.d(TAG, "subscribeToObservers: network status change: available")
                       }
                       is ConnectivityManager.NetworkStatus.Unavailable -> {
                           binding.tvNetworkStatus.visibility = View.VISIBLE
-                          Log.d(TAG, "subscribeToObservers: network status change: unavailable")
                       }
                   }
                 }

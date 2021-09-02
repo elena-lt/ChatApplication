@@ -7,8 +7,8 @@ object UserMapper {
 
     fun toUser(userDomain: UserDomain): Models.User {
         return Models.User(
-            userDomain.id,
-            userDomain.login,
+            userDomain.id!!,
+            userDomain.login!!,
             userDomain.fullName,
             userDomain.email,
             userDomain.blobId,

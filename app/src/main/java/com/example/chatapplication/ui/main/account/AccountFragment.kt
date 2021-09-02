@@ -22,6 +22,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.databinding.FragmentAccountBinding
 import com.example.chatapplication.models.Models
 import com.example.chatapplication.ui.base.BaseFragment
+import com.example.chatapplication.ui.main.account.mvi.AccountStateEvent
 import com.example.chatapplication.utils.Constants.GALLERY_REQUEST_CODE
 import com.quickblox.auth.session.QBSessionManager
 import com.quickblox.auth.session.QBSessionParameters
@@ -51,6 +52,7 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        loadAccountProperties()
         handleOnClickEvents()
         subscribeToObservers()
 
@@ -87,7 +89,6 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
                     viewModel.dataState.collect {
-                        Log.d("AppDebug", "subscribeToObservers: new data statet collected")
                         onStateChangeListener.onDataStateChanged(it)
                     }
                 }
@@ -95,7 +96,6 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
                 launch {
                     viewModel.viewState.collect { viewState ->
                         viewState.user?.let {
-                            Log.d("AppDebug", "subscribeToObservers: new view state collected")
                             updateProfileInfo(it)
                         }
                     }
@@ -103,6 +103,11 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
             }
         }
     }
+
+    private fun loadAccountProperties() {
+        viewModel.setStateEvent(AccountStateEvent.LoadAccountProperties)
+    }
+
 
     private fun updateProfileInfo(user: Models.User) {
         binding.textView.text = user.login

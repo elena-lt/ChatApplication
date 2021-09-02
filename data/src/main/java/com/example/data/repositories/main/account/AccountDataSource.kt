@@ -8,5 +8,6 @@ import java.io.File
 interface AccountDataSource {
 
     suspend fun logout(): Flow<DataState<String>>
+    suspend fun loadAccountProperties(): Flow<DataState<UserDomain>>
     suspend fun updateProfileImage(image: File): Flow<DataState<UserDomain>>
 }

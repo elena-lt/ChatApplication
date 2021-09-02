@@ -52,8 +52,6 @@ class ChatDataSourceImp @Inject constructor(
             NetworkBoundResource<MutableList<ChatEntity>, MutableList<ChatDialogDomain>>(
                 connectivityManager
             ) {
-            override fun forceFetch(): Boolean = false
-
             override suspend fun loadFromDB(): DataState<MutableList<ChatDialogDomain>> {
                 val list = chatsDao.getChats().map {
                     ChatDialogMapper.toChatDialogDomain(it)
@@ -61,7 +59,7 @@ class ChatDataSourceImp @Inject constructor(
                 return DataState.SUCCESS(list)
             }
 
-            override suspend fun createCall(): DataState<MutableList<ChatEntity>> {
+            override suspend fun createCall(): MutableList<ChatEntity>? {
                 var list: MutableList<ChatEntity>? = null
                 kotlin.runCatching {
                     QBRestChatService.getChatDialogs(null, requestBuilder).perform()
@@ -72,7 +70,7 @@ class ChatDataSourceImp @Inject constructor(
                 }.onFailure {
                     onFetchFailed(it.toString())
                 }
-                return DataState.SUCCESS(list)
+                return list
             }
 
             override suspend fun saveFetchResult(data: MutableList<ChatEntity>?) {

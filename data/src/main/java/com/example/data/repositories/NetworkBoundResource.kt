@@ -43,21 +43,23 @@ import javax.xml.transform.Result
 
 @ExperimentalCoroutinesApi
 abstract class NetworkBoundResource<RequestType, ResultType>
- constructor(
+constructor(
     private val connectivityManager: ConnectivityManager
 ) {
 
     val flow = flow<DataState<ResultType>> {
         emit(DataState.LOADING(true))
         if (forceFetch()) {
-            Log.d("AppDebug", "force fetch")
-            saveFetchResult(createCall().data)
-            emit(loadFromDB())
-
+            if (isNetworkAvailable()) {
+                saveFetchResult(createCall())
+                emit(loadFromDB())
+            } else emit(loadFromDB())
         } else {
             emit(loadFromDB())
-            saveFetchResult(createCall().data)
-            emit(loadFromDB())
+            if (isNetworkAvailable()) {
+                saveFetchResult(createCall())
+                emit(loadFromDB())
+            }
         }
     }
 
@@ -79,13 +81,13 @@ abstract class NetworkBoundResource<RequestType, ResultType>
 //        }
 //    }
 
-    protected abstract fun forceFetch(): Boolean
+    protected open fun forceFetch(): Boolean = false
     protected open fun isNetworkAvailable(): Boolean {
         return connectivityManager.isConnectedToInternet
     }
 
     protected abstract suspend fun loadFromDB(): DataState<ResultType>
-    protected abstract suspend fun createCall(): DataState<RequestType>
+    protected abstract suspend fun createCall(): RequestType?
     protected open fun onFetchFailed(throwable: String) {}
     protected open suspend fun saveFetchResult(data: RequestType?) {}
 }

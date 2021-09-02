@@ -12,11 +12,11 @@ data class AccountPropertiesEntity(
     val id: Int,
     val login: String,
     @ColumnInfo (name = "full_name")
-    val fullName: String,
+    val fullName: String? = null,
     @ColumnInfo(name = "email")
-    val email: String,
+    val email: String? = null,
     @ColumnInfo (name = "profile_img")
-    val profileImg: Bitmap? = null,
+    var profileImg: Bitmap? = null,
     @ColumnInfo (name = "external_id")
     val externalId: String? = null,
 

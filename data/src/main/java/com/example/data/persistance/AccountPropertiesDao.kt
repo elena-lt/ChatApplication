@@ -38,12 +38,12 @@ interface AccountPropertiesDao {
 
     suspend fun updateOrInsert(accountProp: AccountPropertiesEntity) {
         val account = searchByUserId(accountProp.id)
-        if (account ==null) insertAccountProperties(accountProp)
+        if (account == null) insertAccountProperties(accountProp)
         else updateAccountProperties(
             accountProp.id,
             accountProp.login,
-            accountProp.email,
-            accountProp.fullName,
+            accountProp.email ?:"",
+            accountProp.fullName ?: "",
             accountProp.profileImg,
             accountProp.externalId ?: ""
         )

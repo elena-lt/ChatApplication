@@ -13,6 +13,9 @@ class AccountRepositoryImp @Inject constructor(
 
     override suspend fun logout(): Flow<DataState<String>> = accountDataSource.logout()
 
+    override suspend fun loadAccountProperties(): Flow<DataState<UserDomain>> =
+        accountDataSource.loadAccountProperties()
+
     override suspend fun updateProfileImg(image: File): Flow<DataState<UserDomain>> =
         accountDataSource.updateProfileImage(image)
 }

@@ -65,17 +65,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                         }
                     }
                 }
-
-//                launch {
-//                    viewModel.authState.collect {
-//                        when (it) {
-//                            is AuthenticationState.Success -> {
-//                                findNavController().navigate(R.id.action_loginFragment_to_chatsFragment)
-//                                Log.d(TAG, "subscribeToEvents: navigating to main fragment")
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
     }
