@@ -4,6 +4,8 @@ import com.example.chatapplication.models.Models
 
 sealed class ChatsStateEvent {
 
+    object LoadCurrUserAccount: ChatsStateEvent()
+
     object LoadAllChats : ChatsStateEvent()
 
     object FindUser : ChatsStateEvent()

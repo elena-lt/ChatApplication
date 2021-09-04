@@ -48,6 +48,7 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadUserAccountData()
         loadChats()
         setupRecycler()
         subscribeToObservers()
@@ -70,7 +71,7 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
             findNavController().navigate(R.id.action_chatsFragment_to_newChatFragment)
         }
 
-        binding.account.setOnClickListener {
+        binding.userProfileImage.setOnClickListener {
             findNavController().navigate(R.id.accountFragment)
         }
     }
@@ -89,6 +90,11 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
                     viewModel.viewState.collect { viewState ->
                         viewState.chats?.let { chats ->
                             chatsRvAdapter.submitList(chats.chats)
+                            Log.d("AppDebug", "subscribeToObservers: ${chats.chats}")
+                        }
+
+                        viewState.currUser?.user?.let {
+                            binding.currUser = it
                         }
                     }
                 }
@@ -96,6 +102,9 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
         }
     }
 
+    private fun loadUserAccountData(){
+        viewModel.setStateEvent(ChatsStateEvent.LoadCurrUserAccount)
+    }
     private fun loadChats() {
         viewModel.setStateEvent(ChatsStateEvent.LoadAllChats)
     }

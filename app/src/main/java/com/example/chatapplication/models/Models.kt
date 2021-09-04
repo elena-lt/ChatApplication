@@ -9,7 +9,7 @@ sealed class Models {
         val login: String,
         val fullName: String? = null,
         val email: String? = null,
-        val blobId: Bitmap? = null,
+        val profileImg: Bitmap? = null,
         val externalId: String? = null,
 
         ) : Models()

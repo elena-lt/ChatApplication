@@ -1,48 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.account.AccountFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/user_profile_image"
-        android:layout_width="135dp"
-        android:layout_height="135dp"
-        android:src="@mipmap/ic_launcher"
-        android:clickable="true"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48000002"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Round"
-        android:focusable="true" />
+    <data>
+        <variable
+            name="currUser"
+            type="com.example.chatapplication.models.Models.User" />
+    </data>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="21sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/poppins"
-        android:textColor="#516091"
-        app:layout_constraintEnd_toEndOf="@+id/user_profile_image"
-        app:layout_constraintStart_toStartOf="@+id/user_profile_image"
-        app:layout_constraintTop_toBottomOf="@id/user_profile_image"
-        tools:layout_editor_absoluteY="187dp"
-        tools:text="User Name" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.account.AccountFragment">
 
-    <Button
-        android:id="@+id/logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/user_profile_image"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
+            android:layout_margin="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            tools:background="@drawable/user_default_img"
+            setImageBitmap="@{currUser.profileImg}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Round" />
 
+        <TextView
+            android:id="@+id/user_full_name"
+            android:text="@{currUser.fullName}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#516091"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_margin="20dp"
+            app:layout_constraintEnd_toEndOf="@+id/user_profile_image"
+            app:layout_constraintStart_toStartOf="@+id/user_profile_image"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_image"
+            tools:layout_editor_absoluteY="187dp"
+            tools:text="User Name" />
 
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/login"
+            android:textColor="@color/text_color_gray"
+            android:textSize="17sp"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_full_name" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/email_address"
+            android:textColor="@color/text_color_gray"
+            android:textSize="17sp"
+            app:layout_constraintStart_toStartOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/log_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <TextView
+            android:id="@+id/user_login"
+            android:text="@{currUser.login}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            tools:text="Login" />
+
+        <TextView
+            android:id="@+id/user_email"
+            android:text="@{currUser.email}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/user_login"
+            app:layout_constraintTop_toTopOf="@+id/textView"
+            tools:text="user_email@gmail.com" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

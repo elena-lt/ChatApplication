@@ -44,7 +44,7 @@ interface AccountPropertiesDao {
             accountProp.login,
             accountProp.email ?:"",
             accountProp.fullName ?: "",
-            accountProp.profileImg,
+            accountProp.profileImg ?: null,
             accountProp.externalId ?: ""
         )
     }

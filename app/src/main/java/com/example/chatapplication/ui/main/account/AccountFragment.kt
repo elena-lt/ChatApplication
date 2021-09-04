@@ -2,15 +2,12 @@ package com.example.chatapplication.ui.main.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -25,14 +22,6 @@ import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.account.mvi.AccountStateEvent
 import com.example.chatapplication.utils.Constants.GALLERY_REQUEST_CODE
 import com.quickblox.auth.session.QBSessionManager
-import com.quickblox.auth.session.QBSessionParameters
-import com.quickblox.content.QBContent
-import com.quickblox.content.model.QBFile
-import com.quickblox.core.QBEntityCallback
-import com.quickblox.core.QBProgressCallback
-import com.quickblox.core.exception.QBResponseException
-import com.quickblox.users.QBUsers
-import com.quickblox.users.model.QBUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -96,7 +85,7 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
                 launch {
                     viewModel.viewState.collect { viewState ->
                         viewState.user?.let {
-                            updateProfileInfo(it)
+                            binding.currUser = it
                         }
                     }
                 }
@@ -111,7 +100,7 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
 
     private fun updateProfileInfo(user: Models.User) {
         binding.textView.text = user.login
-        binding.userProfileImage.setImageBitmap(user.blobId)
+        binding.userProfileImage.setImageBitmap(user.profileImg)
     }
 
     private fun intent() {
@@ -130,7 +119,6 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
             val bos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos)
             val file = File("${requireContext().getExternalFilesDir(null)}" + "img.png")
-//            val file = File ("${Environment.getExternalStorageDirectory()}"+"img.png")
             val fos = FileOutputStream(file)
             fos.write(bos.toByteArray())
             fos.flush()

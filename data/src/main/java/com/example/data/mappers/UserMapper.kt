@@ -17,14 +17,14 @@ object UserMapper {
         )
     }
 
-    fun toUserDomain(accountProp: AccountPropertiesEntity): UserDomain {
+    fun toUserDomain(accountProp: AccountPropertiesEntity?): UserDomain {
         return UserDomain(
-            accountProp.id,
-            accountProp.login,
-            accountProp.fullName,
-            accountProp.email,
-            accountProp.profileImg,
-            accountProp.externalId
+            accountProp?.id,
+            accountProp?.login,
+            accountProp?.fullName,
+            accountProp?.email,
+            accountProp?.profileImg,
+            accountProp?.externalId
         )
     }
 }

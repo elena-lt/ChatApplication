@@ -11,7 +11,7 @@ data class ChatsViewState(
     val openChatDialog: OpenChatDialog? = null
 ) {
     object Idle
-    data class CurrLoggedInUser(val user: Models.User)
+    data class CurrLoggedInUser(val user: Models.User?)
     data class Chats(val chats: MutableList<Models.Chat>)
     data class Users(val users: MutableList<Models.User>)
     data class OpenChatDialog (val chatDialog: Models.Chat, val messages: MutableList<ChatMessage>?)

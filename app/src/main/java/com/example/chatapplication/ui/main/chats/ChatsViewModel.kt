@@ -10,6 +10,7 @@ import com.example.chatapplication.ui.base.BaseViewModel
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent.*
 import com.example.chatapplication.ui.main.chats.mvi.ChatsViewState
+import com.example.core.usecases.main.account.LoadAccountPropertiesUseCase
 import com.example.core.usecases.main.chats.*
 import com.example.core.utils.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,15 +20,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatsViewModel @Inject constructor(
+    private val loadCurrUserAccount: LoadAccountPropertiesUseCase,
     private val loadChatsUseCase: LoadAllChatsUseCase,
     private val findUser: FindUserUseCase,
     private val startNewChat: StartNewChatUseCase,
     private val sendMessage: SendMessageUseCase,
-    private val retriveChatHistory: RetrieveChatHistoryUseCase
+    private val retrieveChatHistory: RetrieveChatHistoryUseCase
 ) : BaseViewModel<ChatsViewState, ChatsStateEvent, DataState<*>>() {
 
     override fun handleStateEvent(stateEvent: ChatsStateEvent) {
         when (stateEvent) {
+            is LoadCurrUserAccount -> loadCurrUserAccount()
             is LoadAllChats -> loadAllChats()
             is FindUser -> findUser()
             is StartNewChat -> startNewDialog(stateEvent.userId)
@@ -37,6 +40,25 @@ class ChatsViewModel @Inject constructor(
                 stateEvent.chatId,
                 stateEvent.occupantsIds
             )
+        }
+    }
+
+    private fun loadCurrUserAccount() {
+        viewModelScope.launch {
+            loadCurrUserAccount.invoke().collect { dataState ->
+
+                dataState.data?.let {
+                    setViewState(
+                        currentState.copy(
+                            currUser = ChatsViewState.CurrLoggedInUser(
+                                user = UserMapper.toUser(
+                                    it
+                                )
+                            )
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -86,7 +108,7 @@ class ChatsViewModel @Inject constructor(
 
     private fun retrieveChatHistory(chatId: String) {
         viewModelScope.launch {
-            retriveChatHistory.invoke(chatId).collect { dataState ->
+            retrieveChatHistory.invoke(chatId).collect { dataState ->
                 setDataState(dataState)
 
                 dataState.data?.let {

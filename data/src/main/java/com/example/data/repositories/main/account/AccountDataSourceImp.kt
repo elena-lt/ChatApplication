@@ -53,6 +53,7 @@ class AccountDataSourceImp @Inject constructor(
                 val qBUser = getUserById(userId)
                  qBUser?.let { user ->
                     user.fileId?.let {
+                        Log.d(TAG, "createCall: user is: $user \nfieldID: $it")
                         val image = downloadFiledId(it)
                         return AccountPropertiesEntity(
                             user.id,
@@ -75,7 +76,6 @@ class AccountDataSourceImp @Inject constructor(
 
             override suspend fun saveFetchResult(data: AccountPropertiesEntity?) {
                 data?.let {
-                    Log.d(TAG, "saveFetchResult: ${it}")
                     accountPropertiesDao.updateOrInsert(it)
                 }
             }

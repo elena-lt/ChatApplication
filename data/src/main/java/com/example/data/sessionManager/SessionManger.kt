@@ -44,6 +44,7 @@ class SessionManger @Inject constructor(
     }
 
     fun logout() {
+        Log.d("AppDebug", "logout")
         sharedPreferencesEditor.clear().apply()
 //        sharedPreferencesEditor.putString(SP_USER_LOGIN, null).apply()
 //        sharedPreferencesEditor.putString(SP_ACCESS_TOKEN, null).apply()
