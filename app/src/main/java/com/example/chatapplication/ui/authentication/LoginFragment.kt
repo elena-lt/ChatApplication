@@ -61,7 +61,22 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                     viewModel.dataState.collect {
                         onStateChangeListener.onDataStateChanged(it)
                         it.data?.let {
-                            viewModel.setState(AuthenticationState.Success(UserMapper.toUser(it)))
+                            viewModel.setState(
+                                AuthenticationState(
+                                    success = AuthenticationState.Success(
+                                        user = UserMapper.toUser(it)
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.authState.collect { authState ->
+                        authState.error?.errorMessage?.let { errorMsg ->
+                            binding.tvErrorMessage.visibility = View.VISIBLE
+                            binding.tvErrorMessage.text = errorMsg
                         }
                     }
                 }

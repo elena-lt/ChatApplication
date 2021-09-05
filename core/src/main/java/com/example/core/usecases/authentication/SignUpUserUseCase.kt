@@ -7,12 +7,13 @@ import com.example.core.utils.DataState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import java.io.File
 import javax.inject.Inject
 
 class SignUpUserUseCase @Inject constructor(private val authRepository: AuthenticationRepository) {
 
-    fun execute(username: String, password: String): Flow<DataState<UserDomain>> {
+    suspend fun execute(username: String, email: String,  password: String, profileImage: File?): Flow<DataState<UserDomain>> {
         Log.d("AppDebug", "SignUpUserUseCase")
-        return authRepository.signUpUser(username, password)
+        return authRepository.signUpUser(username, email, password, profileImage).flowOn(Dispatchers.IO)
     }
 }

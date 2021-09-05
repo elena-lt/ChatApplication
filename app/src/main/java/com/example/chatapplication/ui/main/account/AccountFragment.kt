@@ -1,4 +1,4 @@
-package com.example.chatapplication.ui.main.account
+ package com.example.chatapplication.ui.main.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -97,12 +97,6 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
         viewModel.setStateEvent(AccountStateEvent.LoadAccountProperties)
     }
 
-
-    private fun updateProfileInfo(user: Models.User) {
-        binding.textView.text = user.login
-        binding.userProfileImage.setImageBitmap(user.profileImg)
-    }
-
     private fun intent() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
@@ -128,7 +122,6 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
 
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
-
         }
     }
 

@@ -5,18 +5,23 @@ import android.util.Log
 import com.example.core.models.UserDomain
 import com.example.core.utils.DataState
 import com.example.data.mappers.UserMapper
+import com.example.data.repositories.NetworkBoundResource
 import com.example.data.sessionManager.SessionManger
 import com.quickblox.chat.QBChatService
+import com.quickblox.content.QBContent
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.users.QBUsers
+import com.quickblox.users.QBUsers.updateUser
 import com.quickblox.users.model.QBUser
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
+import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class AuthenticationDataSourceImp @Inject constructor(
     val sessionManager: SessionManger,
@@ -24,26 +29,61 @@ class AuthenticationDataSourceImp @Inject constructor(
 ) : AuthenticationDataSource {
 
     @ExperimentalCoroutinesApi
-    override fun signUpUser(
+    override suspend fun signUpUser(
         username: String,
-        password: String
-    ): Flow<DataState<UserDomain>> {
+        email: String,
+        password: String,
+        profileImage: File?
+    ): Flow<DataState<UserDomain>> = flow<DataState<UserDomain>> {
+        val user = QBUser()
+        user.login = username
+        user.password = password
+        user.email = email
 
-        return callbackFlow {
-            offer(DataState.LOADING(true))
-            val user = QBUser()
-            user.login = username
-            user.password = password
-            QBUsers.signUp(user).performAsync(object : QBEntityCallback<QBUser> {
-                override fun onSuccess(p0: QBUser?, p1: Bundle?) {
-                    offer(DataState.SUCCESS(UserMapper.toUserDomain(p0)))
+        kotlin.runCatching {
+            QBUsers.signUp(user).perform()
+        }.onSuccess { qbUser ->
+            loginUser(username, password).collect {
+                it.data?.let {
+                    profileImage?.let { file ->
+                        val img = uploadImage(qbUser, file)
+                        img?.let { fileId ->
+                            updateUser(qbUser, fileId)
+                        }
+                    }
                 }
+            }
+        }.onFailure {
+            emit(DataState.ERROR(it?.message ?: "Unknown error"))
+        }
+    }
 
-                override fun onError(p0: QBResponseException?) {
-                    offer(DataState.ERROR(p0?.message ?: "Unknown error"))
-                }
-            })
-            awaitClose()
+    private suspend fun uploadImage(user: QBUser, image: File): Int? {
+
+        return suspendCoroutine { cont ->
+            kotlin.runCatching {
+                QBContent.uploadFileTask(image, false, null).perform()
+            }.onSuccess {
+                cont.resume(it.id)
+            }.onFailure {
+                Log.d("AppDebug", "uploadImage: error ${it}")
+                cont.resume(null)
+            }
+        }
+    }
+
+    private suspend fun updateUser(user: QBUser, fileId: Int): QBUser {
+        return suspendCoroutine { cont ->
+            kotlin.runCatching {
+                Log.d("AppDebug", "updateUser: $user")
+                user.fileId = fileId
+                updateUser(user).perform()
+            }.onSuccess {
+                Log.d("AppDebug", "updateUser: $it")
+                cont.resume(it)
+            }.onFailure {
+                cont.resumeWithException(it)
+            }
         }
     }
 
@@ -57,14 +97,11 @@ class AuthenticationDataSourceImp @Inject constructor(
                 query.perform()
             }.onSuccess {
                 emit(DataState.SUCCESS(UserMapper.toUserDomain(it)))
-//                sessionManager.createSessionManagerListener()
                 createChatService(user)
             }.onFailure {
                 emit(DataState.ERROR<UserDomain>(errorMessage = it.toString()))
             }
-
         }
-
 
     private fun createChatService(user: QBUser) {
         GlobalScope.launch {

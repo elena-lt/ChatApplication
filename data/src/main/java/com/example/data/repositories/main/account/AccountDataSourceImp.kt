@@ -8,6 +8,7 @@ import com.example.core.models.UserDomain
 import com.example.core.utils.DataState
 import com.example.data.mappers.UserMapper
 import com.example.data.persistance.AccountPropertiesDao
+import com.example.data.persistance.AppDatabase
 import com.example.data.persistance.entities.AccountPropertiesEntity
 import com.example.data.repositories.NetworkBoundResource
 import com.example.data.utils.ConnectivityManager
@@ -29,6 +30,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @ExperimentalCoroutinesApi
 class AccountDataSourceImp @Inject constructor(
+    val database: AppDatabase,
     val connectivityManager: ConnectivityManager,
     val accountPropertiesDao: AccountPropertiesDao,
     private val sharedPreferences: SharedPreferences
@@ -45,15 +47,13 @@ class AccountDataSourceImp @Inject constructor(
                 val user = accountPropertiesDao.searchByUserId(userId)?.let {
                     UserMapper.toUserDomain(it)
                 }
-                Log.d(TAG, "loadFromDB: $user")
                 return DataState.SUCCESS(user)
             }
 
             override suspend fun createCall(): AccountPropertiesEntity? {
                 val qBUser = getUserById(userId)
-                 qBUser?.let { user ->
+                qBUser?.let { user ->
                     user.fileId?.let {
-                        Log.d(TAG, "createCall: user is: $user \nfieldID: $it")
                         val image = downloadFiledId(it)
                         return AccountPropertiesEntity(
                             user.id,
@@ -90,7 +90,6 @@ class AccountDataSourceImp @Inject constructor(
             override fun forceFetch(): Boolean = true
 
             override suspend fun loadFromDB(): DataState<UserDomain> {
-                Log.d(TAG, "loadFromDB: loading data from db $userId")
                 val user = accountPropertiesDao.searchByUserId(userId)
                 return DataState.SUCCESS(
                     UserDomain(
@@ -109,11 +108,9 @@ class AccountDataSourceImp @Inject constructor(
                 val user = getUserById(userId)
 
                 if (user != null) {
-                    Log.d(TAG, "createCall: user is not null")
                     kotlin.runCatching {
                         QBContent.uploadFileTask(image, false, null).perform()
                     }.onSuccess {
-                        Log.d(TAG, "createCall: successfully uploaded file")
                         user.fileId = it.id
                         val uid = it.uid
                         val query = updateUser(user)
@@ -164,7 +161,7 @@ class AccountDataSourceImp @Inject constructor(
 
         return suspendCoroutine { cont ->
             kotlin.runCatching {
-                QBContent.downloadFileById(fileId) { Log.d(TAG, "onProgressUpdate: $it") }.perform()
+                QBContent.downloadFileById(fileId) {  }.perform()
 
             }.onSuccess {
                 cont.resume(BitmapFactory.decodeStream(it))
@@ -178,7 +175,6 @@ class AccountDataSourceImp @Inject constructor(
             kotlin.runCatching {
                 QBContent.downloadFile(uid).perform()
             }.onSuccess {
-                Log.d(TAG, "downloadFile: success")
                 cont.resume(BitmapFactory.decodeStream(it))
             }.onFailure {
                 Log.d(TAG, "downloadFile: error $it")
@@ -192,22 +188,19 @@ class AccountDataSourceImp @Inject constructor(
             kotlin.runCatching {
                 QBUsers.updateUser(user).perform()
             }.onSuccess {
-                Log.d(TAG, "updateUser: user updated")
                 cont.resume(it)
             }.onFailure {
-                Log.d(TAG, "updateUser: erroe updating user: ${it.toString()}")
+                Log.d(TAG, "updateUser: error updating user: ${it.toString()}")
                 cont.resumeWithException(it)
             }
         }
     }
 
     private suspend fun getUserById(userId: Int): QBUser? {
-
         return suspendCoroutine { cont ->
             kotlin.runCatching {
                 QBUsers.getUser(userId).perform()
             }.onSuccess {
-                Log.d(TAG, "getUserById: success ${it.login}")
                 cont.resume(it)
             }.onFailure {
                 Log.d(TAG, "getUserById: error ${it.message}")
@@ -218,7 +211,7 @@ class AccountDataSourceImp @Inject constructor(
 
     override suspend fun logout(): Flow<DataState<String>> = flow {
         emit(DataState.LOADING(true))
-
+        database.clearAllTables()
         kotlin.runCatching {
             QBUsers.signOut().perform()
         }.onSuccess {

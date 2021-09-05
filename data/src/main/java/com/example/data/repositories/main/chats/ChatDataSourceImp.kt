@@ -81,31 +81,6 @@ class ChatDataSourceImp @Inject constructor(
                 }
             }
         }.flow
-
-//        return networkBoundResourceFun(
-//            forceFetch = false,
-//            query = {
-//                chatsDao.getAllChats().map { list ->
-//                    list.map {
-//                        ChatDialogMapper.toChatDialogDomain(it)
-//                    }.toMutableList()
-//                }
-//            },
-//            fetch = {
-//                QBRestChatService.getChatDialogs(null, requestBuilder).perform()
-//            },
-//            saveFetchResult = {
-//                val listToSave = listOf<ChatEntity>()
-//                for (item in it) {
-//                    val newItem = ChatDialogMapper.toChatEntity(item)
-//                    chatsDao.insertChats(newItem)
-//
-//                }
-//            },
-//            shouldFetch = {
-//                Log.d(TAG, "loadAllChats: ${connectivityManager.isConnectedToInternet}")
-//                connectivityManager.isConnectedToInternet }
-//        )
     }
 
     override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> = flow {
@@ -136,11 +111,9 @@ class ChatDataSourceImp @Inject constructor(
                 override fun onSuccess(p0: QBChatDialog?, p1: Bundle?) {
                     (DataState.SUCCESS(ChatDialogMapper.toChatDialogDomain(p0)))
                 }
-
                 override fun onError(p0: QBResponseException?) {
                     Log.d("AppDebug", "onError: ${p0?.message}")
                 }
-
             })
     }
 

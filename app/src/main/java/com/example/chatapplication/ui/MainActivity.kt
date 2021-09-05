@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
     private lateinit var navController: NavController
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,21 +49,28 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         setupNavGraph()
 
         Log.d(TAG, "onCreate: ${sessionManager.currUser.value}")
-
         initSessionManager()
         setupQuickBlox()
         subscribeToObservers()
 
     }
 
+    override fun onResume() {
+        sessionManager.registerListener()
+        sessionManager.createSessionManagerListener()
+        super.onResume()
+    }
+
     override fun onPause() {
         sessionManager.unregister()
+        sessionManager.removeSessionManagerListener()
         super.onPause()
     }
 
     @ExperimentalCoroutinesApi
     private fun subscribeToObservers() {
         sessionManager.currUser.observe(this, { userLogin ->
+            Log.d(TAG, "subscribeToObservers: new value collected $userLogin")
             if (userLogin != null && userLogin.isNotBlank()) {
                 navigateToChatsFragment()
             } else {
@@ -95,8 +103,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
     }
 
     private fun initSessionManager() {
-        sessionManager.registerListener()
-        sessionManager.createSessionManagerListener()
+//        sessionManager.registerListener()
+//        sessionManager.createSessionManagerListener()
     }
 
     private fun navigateToLoginFragment() {

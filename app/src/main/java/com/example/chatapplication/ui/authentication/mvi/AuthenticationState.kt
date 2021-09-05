@@ -2,8 +2,12 @@ package com.example.chatapplication.ui.authentication.mvi
 
 import com.example.chatapplication.models.Models
 
-sealed class AuthenticationState {
+data class AuthenticationState(
+    val error: Error? = null,
+    val success: Success? = null
+) {
 
-    object Idle : AuthenticationState()
-    data class Success(val user: Models.User) : AuthenticationState()
+    object Idle
+    data class Error(val errorMessage: String?)
+    data class Success(val user: Models.User)
 }

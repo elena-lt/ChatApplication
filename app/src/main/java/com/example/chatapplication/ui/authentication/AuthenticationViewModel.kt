@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @InternalCoroutinesApi
@@ -27,7 +28,7 @@ class AuthenticationViewModel @Inject constructor(
     private val _dataState: MutableSharedFlow<DataState<UserDomain>> = MutableSharedFlow()
     val dataState = _dataState.asSharedFlow()
 
-    private var _authState = MutableStateFlow<AuthenticationState>(AuthenticationState.Idle)
+    private var _authState = MutableStateFlow<AuthenticationState>(AuthenticationState())
     val authState: StateFlow<AuthenticationState> get() = _authState.asStateFlow()
 
     val currentState: AuthenticationState
@@ -46,14 +47,20 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    fun handleIntent(intent: AuthenticationStateEvent) {
+    private fun handleIntent(intent: AuthenticationStateEvent) {
         viewModelScope.launch {
             when (intent) {
                 is AuthenticationStateEvent.LoginUser -> {
                     loginUser(intent.login, intent.password)
                 }
                 is AuthenticationStateEvent.SignUpUser -> {
-                    signUpUser(intent.username, intent.password)
+                    signUpUser(
+                        intent.username,
+                        intent.email,
+                        intent.password,
+                        intent.confirmPassword,
+                        intent.image
+                    )
                 }
             }
         }
@@ -74,15 +81,47 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    private fun signUpUser(email: String, password: String) {
+    private fun signUpUser(
+        login: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        image: File?
+    ) {
+
+        if (login.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            return setState(
+                AuthenticationState(
+                    error = AuthenticationState.Error(errorMessage = "All fields must be filled out")
+                )
+            )
+        }
+
+        if (password != confirmPassword) {
+            return setState(
+                AuthenticationState(
+                    error = AuthenticationState.Error(errorMessage = "Passwords are not the same")
+                )
+            )
+        }
+
         viewModelScope.launch {
-            signUp.execute(email, password).collect { dataState ->
+            signUp.execute(login, email, password, image).collect { dataState ->
                 setDataState(dataState)
             }
         }
     }
 
-    fun loginUser(username: String, password: String) {
+    private fun loginUser(username: String, password: String) {
+
+        if (username.isBlank() || password.isBlank()) {
+            return setState(
+                AuthenticationState(
+                    error = AuthenticationState.Error(errorMessage = "All fields must be filled out")
+                )
+            )
+        }
+
         viewModelScope.launch {
             login.execute(username, password).collect { dataState ->
                 setDataState(dataState)

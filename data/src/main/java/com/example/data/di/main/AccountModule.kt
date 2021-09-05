@@ -26,11 +26,12 @@ class AccountModule {
     @Provides
     @Singleton
     fun provideAccountDataSource(
+        database: AppDatabase,
         connectivityManager: ConnectivityManager,
         accountPropertiesDao: AccountPropertiesDao,
         sharedPreferences: SharedPreferences
     ): AccountDataSource =
-        AccountDataSourceImp(connectivityManager, accountPropertiesDao, sharedPreferences)
+        AccountDataSourceImp(database,connectivityManager, accountPropertiesDao, sharedPreferences)
 
     @Provides
     @Singleton
