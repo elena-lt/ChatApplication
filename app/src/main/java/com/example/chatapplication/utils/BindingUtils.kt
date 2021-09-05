@@ -9,6 +9,7 @@ import com.google.android.material.imageview.ShapeableImageView
 fun ShapeableImageView.bindImageBitmap(bitmap: Bitmap?) {
     if (bitmap != null) {
         this.setImageBitmap(bitmap)
+    }else{
+        this.setImageResource(R.drawable.user_default_img)
     }
-    this.setImageResource(R.drawable.user_default_img)
 }
