@@ -5,4 +5,10 @@
     <string name="email_address">Email Address</string>
     <string name="login">Login</string>
     <string name="log_out">Log out</string>
+    <string name="register">Register</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="log_in">Log in</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="passwords_are_not_the_same">Passwords are not the same</string>
 </resources>

@@ -44,8 +44,9 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_edt_field"
-            android:hint="Email"
-            android:paddingStart="20dp" />
+            android:hint="@string/email"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"/>
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_password"
@@ -55,8 +56,21 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_edt_field"
-            android:hint="Password"
-            android:paddingStart="20dp" />
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="All fields must be filled out"
+            android:textColor="#E10F0F"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:visibility="gone"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_login"
@@ -67,7 +81,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_btn"
             android:backgroundTint="@null"
-            android:text="Log in"
+            android:text="@string/log_in"
             android:textStyle="bold" />
 
         <com.google.android.material.textview.MaterialTextView
