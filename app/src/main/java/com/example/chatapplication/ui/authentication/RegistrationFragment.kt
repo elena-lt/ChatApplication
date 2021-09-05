@@ -144,6 +144,7 @@ class RegistrationFragment : BaseAuthFragment<FragmentRegistrationBinding>() {
                 AuthenticationStateEvent.SignUpUser(
                     binding.edtUsername.text.toString(),
                     binding.edtEmail.text.toString(),
+                    binding.edtFullName.text.toString(),
                     binding.edtPassword.text.toString(),
                     binding.edtConfirmPassword.text.toString(),
                     imageFile

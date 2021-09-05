@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.6">
+        app:layout_constraintVertical_bias="0.69">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_username"
@@ -44,6 +44,18 @@
             android:layout_marginEnd="15dp"
             android:background="@drawable/rounded_edt_field"
             android:hint="Email"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_full_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/rounded_edt_field"
+            android:hint="Full name"
             android:paddingStart="20dp"
             android:paddingEnd="20dp" />
 
@@ -147,5 +159,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="254dp" />
+        app:layout_constraintGuide_begin="232dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

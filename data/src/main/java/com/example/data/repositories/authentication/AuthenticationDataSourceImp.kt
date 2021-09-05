@@ -34,6 +34,7 @@ class AuthenticationDataSourceImp @Inject constructor(
     override suspend fun signUpUser(
         username: String,
         email: String,
+        fullName: String,
         password: String,
         profileImage: File?
     ): Flow<DataState<UserDomain>> = flow<DataState<UserDomain>> {
@@ -41,6 +42,7 @@ class AuthenticationDataSourceImp @Inject constructor(
         user.login = username
         user.password = password
         user.email = email
+        user.fullName = fullName
 
         kotlin.runCatching {
             QBUsers.signUp(user).perform()

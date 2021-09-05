@@ -12,6 +12,6 @@ class AuthenticationRepositoryImp @Inject constructor(
     override suspend fun loginUser(login: String, password: String) =
         authDataSource.loginUser(login, password)
 
-    override suspend fun signUpUser(username: String, email: String, password: String, profileImage: File?)=
-        authDataSource.signUpUser(username, email, password, profileImage)
+    override suspend fun signUpUser(username: String, email: String, fullName: String, password: String, profileImage: File?)=
+        authDataSource.signUpUser(username, email, fullName, password, profileImage)
 }

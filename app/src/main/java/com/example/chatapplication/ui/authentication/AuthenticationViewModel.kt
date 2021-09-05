@@ -57,6 +57,7 @@ class AuthenticationViewModel @Inject constructor(
                     signUpUser(
                         intent.username,
                         intent.email,
+                        intent.fullName,
                         intent.password,
                         intent.confirmPassword,
                         intent.image
@@ -84,12 +85,13 @@ class AuthenticationViewModel @Inject constructor(
     private fun signUpUser(
         login: String,
         email: String,
+        fullName: String,
         password: String,
         confirmPassword: String,
         image: File?
     ) {
 
-        if (login.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+        if (login.isBlank() || email.isBlank() || fullName.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
             return setState(
                 AuthenticationState(
                     error = AuthenticationState.Error(errorMessage = "All fields must be filled out")
@@ -106,7 +108,7 @@ class AuthenticationViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            signUp.execute(login, email, password, image).collect { dataState ->
+            signUp.execute(login, email, fullName, password, image).collect { dataState ->
                 setDataState(dataState)
             }
         }

@@ -7,6 +7,7 @@ sealed class AuthenticationStateEvent {
     data class SignUpUser(
         val username: String,
         val email: String,
+        val fullName: String,
         val password: String,
         val confirmPassword: String,
         val image: File? = null

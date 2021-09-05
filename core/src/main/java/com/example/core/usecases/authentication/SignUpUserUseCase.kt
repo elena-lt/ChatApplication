@@ -12,8 +12,15 @@ import javax.inject.Inject
 
 class SignUpUserUseCase @Inject constructor(private val authRepository: AuthenticationRepository) {
 
-    suspend fun execute(username: String, email: String,  password: String, profileImage: File?): Flow<DataState<UserDomain>> {
+    suspend fun execute(
+        username: String,
+        email: String,
+        fullName: String,
+        password: String,
+        profileImage: File?
+    ): Flow<DataState<UserDomain>> {
         Log.d("AppDebug", "SignUpUserUseCase")
-        return authRepository.signUpUser(username, email, password, profileImage).flowOn(Dispatchers.IO)
+        return authRepository.signUpUser(username, email, fullName, password, profileImage)
+            .flowOn(Dispatchers.IO)
     }
 }

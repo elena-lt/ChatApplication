@@ -10,6 +10,7 @@ interface AuthenticationDataSource {
     suspend fun signUpUser(
         username: String,
         email: String,
+        fullName: String,
         password: String,
         profileImage: File?
     ): Flow<DataState<UserDomain>>
