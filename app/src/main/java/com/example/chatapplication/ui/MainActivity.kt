@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         navController.navigate(
             R.id.chats_graph,
             null,
-            NavOptions.Builder().setPopUpTo(R.id.chats_graph, true, false).build()
+            NavOptions.Builder().setPopUpTo(R.id.chats_graph, inclusive = true, saveState = false).build()
         )
     }
 

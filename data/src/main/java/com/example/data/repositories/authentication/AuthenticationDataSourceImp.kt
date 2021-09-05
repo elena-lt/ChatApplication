@@ -1,3 +1,5 @@
+@file:Suppress("RemoveExplicitTypeArguments")
+
 package com.example.data.repositories.authentication
 
 import android.os.Bundle
@@ -54,7 +56,7 @@ class AuthenticationDataSourceImp @Inject constructor(
                 }
             }
         }.onFailure {
-            emit(DataState.ERROR(it?.message ?: "Unknown error"))
+            emit(DataState.ERROR(it.message ?: "Unknown error"))
         }
     }
 
@@ -66,7 +68,7 @@ class AuthenticationDataSourceImp @Inject constructor(
             }.onSuccess {
                 cont.resume(it.id)
             }.onFailure {
-                Log.d("AppDebug", "uploadImage: error ${it}")
+                Log.d("AppDebug", "uploadImage: error $it")
                 cont.resume(null)
             }
         }

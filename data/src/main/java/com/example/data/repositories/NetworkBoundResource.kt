@@ -47,7 +47,7 @@ constructor(
     private val connectivityManager: ConnectivityManager
 ) {
 
-    val flow = flow<DataState<ResultType>> {
+    val flow = flow{
         emit(DataState.LOADING(true))
         if (forceFetch()) {
             if (isNetworkAvailable()) {
@@ -62,24 +62,6 @@ constructor(
             }
         }
     }
-
-//    private suspend fun handleQueries()
-//    = flow<DataState<ResultType>>
-//    {
-//        Log.d("ApDebug", "handleQueries: ")
-//        if (isNetworkAvailable()) {
-//            try {
-//                saveFetchResult(createCall().data)
-//                emit(loadFromDB())
-//            } catch (throwable: Throwable) {
-//                onFetchFailed(throwable.toString())
-//                emit(loadFromDB())
-//                emit(DataState.ERROR(throwable.message ?: Const.UNKNOWN_ERROR))
-//            }
-//        } else {
-//            emit(loadFromDB())
-//        }
-//    }
 
     protected open fun forceFetch(): Boolean = false
     protected open fun isNetworkAvailable(): Boolean {

@@ -102,7 +102,7 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
         intent.type = "image/*"
         val mimeTypes = arrayOf("image/jpeg", "image/png", "image/jpg")
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
 

@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 package com.example.chatapplication.ui.base
 
 import androidx.lifecycle.ViewModel
@@ -10,13 +12,13 @@ import kotlinx.coroutines.launch
 
 abstract class BaseViewModel <ViewState, StateEvent, DataState>: ViewModel() {
 
-    protected val _stateEvent: MutableSharedFlow<StateEvent> = MutableSharedFlow()
+    private val _stateEvent: MutableSharedFlow<StateEvent> = MutableSharedFlow()
     val stateEvent get() = _stateEvent.asSharedFlow()
 
     private val initViewState: ViewState by lazy {createInitialState()}
     abstract fun createInitialState(): ViewState
 
-    protected val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(initViewState)
+    private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(initViewState)
     val viewState get() = _viewState.asSharedFlow()
 
     private val _dataState: MutableSharedFlow<DataState> = MutableSharedFlow()

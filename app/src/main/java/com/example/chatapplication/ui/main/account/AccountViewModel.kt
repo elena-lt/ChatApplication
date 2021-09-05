@@ -40,7 +40,7 @@ class AccountViewModel
                 setDataState(dataState)
 
                 dataState.data?.let {
-                    setViewState(currentState.copy(user = UserMapper.toUser(it), false))
+                    setViewState(currentState.copy(user = UserMapper.toUser(it), loggedOut = false))
                 }
             }
         }
@@ -52,7 +52,7 @@ class AccountViewModel
                 setDataState(dataState)
 
                 dataState.data?.let {
-                    setViewState(currentState.copy(user = UserMapper.toUser(it), false))
+                    setViewState(currentState.copy(user = UserMapper.toUser(it), loggedOut = false))
                 }
             }
         }

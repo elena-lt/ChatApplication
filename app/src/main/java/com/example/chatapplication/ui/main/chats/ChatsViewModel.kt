@@ -83,8 +83,8 @@ class ChatsViewModel @Inject constructor(
             findUser.invoke().collect {
                 setDataState(it)
 
-                it.data?.let {
-                    val newState = currentState.copy(users = ChatsViewState.Users(it.map { user ->
+                it.data?.let {usersList ->
+                    val newState = currentState.copy(users = ChatsViewState.Users(usersList.map { user ->
                         UserMapper.toUser(user)
                     }.toMutableList()))
                     setViewState(newState)

@@ -60,11 +60,11 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                 launch {
                     viewModel.dataState.collect {
                         onStateChangeListener.onDataStateChanged(it)
-                        it.data?.let {
+                        it.data?.let {user ->
                             viewModel.setState(
                                 AuthenticationState(
                                     success = AuthenticationState.Success(
-                                        user = UserMapper.toUser(it)
+                                        user = UserMapper.toUser(user)
                                     )
                                 )
                             )

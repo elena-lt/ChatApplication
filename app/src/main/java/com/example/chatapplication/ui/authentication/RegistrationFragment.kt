@@ -70,11 +70,11 @@ class RegistrationFragment : BaseAuthFragment<FragmentRegistrationBinding>() {
                 launch {
                     viewModel.dataState.collect {
                         onStateChangeListener.onDataStateChanged(it)
-                        it.data?.let {
+                        it.data?.let {user ->
                             viewModel.setState(
                                 AuthenticationState(
                                     success = AuthenticationState.Success(
-                                        user = UserMapper.toUser(it)
+                                        user = UserMapper.toUser(user)
                                     )
                                 )
                             )
@@ -100,7 +100,7 @@ class RegistrationFragment : BaseAuthFragment<FragmentRegistrationBinding>() {
         intent.type = "image/*"
         val mimeTypes = arrayOf("image/jpeg", "image/png", "image/jpg")
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         startActivityForResult(intent, Constants.GALLERY_REQUEST_CODE)
     }
 

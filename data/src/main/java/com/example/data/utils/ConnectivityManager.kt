@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 class ConnectivityManager @Inject constructor(
-    private val context: Context
+    context: Context
 ) {
 
     private val connectivityManager =
@@ -21,7 +21,7 @@ class ConnectivityManager @Inject constructor(
 
     var isConnectedToInternet = false
 
-    val networkStatus = callbackFlow<NetworkStatus> {
+    val networkStatus = callbackFlow{
         val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 isConnectedToInternet = true

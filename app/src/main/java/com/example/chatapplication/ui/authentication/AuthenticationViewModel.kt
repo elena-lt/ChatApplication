@@ -75,7 +75,7 @@ class AuthenticationViewModel @Inject constructor(
         _authState.value = state
     }
 
-    fun setDataState(dataState: DataState<UserDomain>) {
+    private fun setDataState(dataState: DataState<UserDomain>) {
         viewModelScope.launch {
             _dataState.emit(dataState)
         }

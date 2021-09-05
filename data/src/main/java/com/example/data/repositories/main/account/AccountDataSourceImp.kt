@@ -190,7 +190,7 @@ class AccountDataSourceImp @Inject constructor(
             }.onSuccess {
                 cont.resume(it)
             }.onFailure {
-                Log.d(TAG, "updateUser: error updating user: ${it.toString()}")
+                Log.d(TAG, "updateUser: error updating user: $it")
                 cont.resumeWithException(it)
             }
         }

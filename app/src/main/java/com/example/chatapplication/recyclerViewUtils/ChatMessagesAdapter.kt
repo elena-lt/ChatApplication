@@ -15,14 +15,14 @@ import com.quickblox.auth.session.QBSessionManager
 import java.lang.IllegalArgumentException
 
 class ChatMessagesAdapter : RecyclerView.Adapter<MessagesViewHolder>() {
-    val userLogin = QBSessionManager.getInstance().activeSession.userId
+    private val userLogin = QBSessionManager.getInstance().activeSession.userId
 
     companion object {
         const val MSG_LEFT = 0
         const val MSG_RIGHT = 1
     }
 
-    val diffUtil = object : DiffUtil.ItemCallback<ChatMessage>() {
+    private val diffUtil = object : DiffUtil.ItemCallback<ChatMessage>() {
         override fun areItemsTheSame(oldItem: ChatMessage, newItem: ChatMessage) =
             oldItem == newItem
 

@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 class SessionManger @Inject constructor(
     private val qbSessionManager: QBSessionManager,
-    private val database: AppDatabase,
     private val sharedPreferences: SharedPreferences,
     val sharedPreferencesEditor: SharedPreferences.Editor
 ) {
@@ -23,7 +22,7 @@ class SessionManger @Inject constructor(
         MutableLiveData<String?>(sharedPreferences.getString(SP_USER_LOGIN, null))
     val currUser: LiveData<String?> = _currUser
 
-    val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+    private val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         when (key) {
             SP_USER_LOGIN -> {
                 _currUser.postValue(sharedPreferences.getString(SP_USER_LOGIN, null))
@@ -47,21 +46,8 @@ class SessionManger @Inject constructor(
     }
 
     fun logout() {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            launch {
-//                val job = this.launch {
-//                    database.clearAllTables()
-//                    val list = database.getChatDao().getChats()
-//                    Log.d("AppDebug", "logout: chats list")
-//                }
-//
-//                job.cancelAndJoin()
-//                withContext(Dispatchers.Main){
-                    sharedPreferencesEditor.putString(SP_USER_LOGIN, null).apply()
-                    sharedPreferencesEditor.putString(SP_USER_ID, null).apply()
-//                }
-//            }
-//        }
+        sharedPreferencesEditor.putString(SP_USER_LOGIN, null).apply()
+        sharedPreferencesEditor.putString(SP_USER_ID, null).apply()
     }
 
     fun registerListener() {
@@ -115,7 +101,7 @@ class SessionManger @Inject constructor(
 
     }
 
-    fun removeSessionManagerListener(){
+    fun removeSessionManagerListener() {
         qbSessionManager.removeListeners()
     }
 }

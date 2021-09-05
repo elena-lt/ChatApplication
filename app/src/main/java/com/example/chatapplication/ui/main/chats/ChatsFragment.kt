@@ -56,16 +56,6 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
 
     }
 
-    override fun onResume() {
-
-        super.onResume()
-    }
-
-    override fun onPause() {
-
-        super.onPause()
-    }
-
     private fun handleOnClickEvents() {
         binding.btnStartNewChat.setOnClickListener {
             findNavController().navigate(R.id.action_chatsFragment_to_newChatFragment)

@@ -1,5 +1,6 @@
 package com.example.chatapplication.ui.main.chats
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -46,15 +47,6 @@ class ActiveChatFragment : BaseChatsFragment<FragmentActiveChatBinding>() {
 
     }
 
-    override fun onResume() {
-
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
     private fun handleOnClickEvents() {
         binding.sendMessageBtn.setOnClickListener {
             sendMessage(
@@ -65,6 +57,7 @@ class ActiveChatFragment : BaseChatsFragment<FragmentActiveChatBinding>() {
         }
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     private fun subscribeToObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {

@@ -78,7 +78,7 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
 
     override fun onItemSelected(position: Int, item: Models) {
         val user = item as Models.User
-        user.id?.let { startPrivateChat(it) }
+        startPrivateChat(user.id)
     }
 
 }
