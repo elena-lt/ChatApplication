@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="currUser"
             type="com.example.chatapplication.models.Models.User" />
@@ -16,43 +17,76 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/user_profile_image"
-            android:layout_width="135dp"
-            android:layout_height="135dp"
+            setImageBitmap="@{currUser.profileImg}"
+            android:layout_width="155dp"
+            android:layout_height="155dp"
             android:layout_margin="15dp"
             android:clickable="true"
             android:focusable="true"
-            tools:background="@drawable/user_default_img"
-            setImageBitmap="@{currUser.profileImg}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline4"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Round" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Round"
+            tools:background="@drawable/user_default_img" />
+
+        <ImageButton
+            android:id="@+id/change_profile_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_image"
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile_image"
+            app:layout_constraintEnd_toEndOf="@+id/user_profile_image" />
 
         <TextView
             android:id="@+id/user_full_name"
-            android:text="@{currUser.fullName}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:fontFamily="@font/poppins"
+            android:text="@{currUser.fullName}"
             android:textColor="#516091"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:layout_margin="20dp"
             app:layout_constraintEnd_toEndOf="@+id/user_profile_image"
             app:layout_constraintStart_toStartOf="@+id/user_profile_image"
             app:layout_constraintTop_toBottomOf="@id/user_profile_image"
             tools:layout_editor_absoluteY="187dp"
             tools:text="User Name" />
 
+        <ImageButton
+            android:id="@+id/edit_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/ic_baseline_edit_24"
+            app:layout_constraintBottom_toTopOf="@+id/user_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_full_name"
+            app:layout_constraintVertical_bias="0.45" />
+
+        <ImageButton
+            android:id="@+id/btn_submit_changes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/ic_baseline_check_24"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/user_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_full_name" />
+
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
             android:text="@string/login"
             android:textColor="@color/text_color_gray"
             android:textSize="17sp"
-            android:layout_marginTop="40dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_full_name" />
 
@@ -85,22 +119,62 @@
 
         <TextView
             android:id="@+id/user_login"
-            android:text="@{currUser.login}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:text="@{currUser.login}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView2"
             tools:text="Login" />
 
         <TextView
             android:id="@+id/user_email"
-            android:text="@{currUser.email}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{currUser.email}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="@+id/user_login"
             app:layout_constraintTop_toTopOf="@+id/textView"
             tools:text="user_email@gmail.com" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:paddingStart="7dp"
+            android:paddingEnd="10dp"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView2"
+            tools:text="User login" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_email_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="7dp"
+            android:paddingEnd="10dp"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintEnd_toEndOf="@+id/edt_login"
+            app:layout_constraintTop_toTopOf="@+id/textView"
+            tools:text="email@email.com" />
+
+        <TextView
+            android:id="@+id/btn_dissmiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dismiss"
+            android:visibility="gone"
+            android:textColor="#0C3381"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_submit_changes" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

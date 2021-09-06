@@ -1,4 +1,4 @@
- package com.example.chatapplication.ui.main.account
+package com.example.chatapplication.ui.main.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,9 +8,11 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -52,8 +54,39 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
             logout()
         }
 
-        binding.userProfileImage.setOnClickListener {
+        binding.changeProfileImg.setOnClickListener {
             intent()
+        }
+
+        binding.editProfile.setOnClickListener {
+            setEditableMode(true)
+        }
+
+        binding.btnSubmitChanges.setOnClickListener{
+            applyAccountChanges()
+        }
+
+        binding.btnDissmiss.setOnClickListener {
+            setEditableMode(false)
+        }
+    }
+
+    private fun setEditableMode(editableMode: Boolean) {
+        val email = binding.userEmail.text.toString()
+        val login = binding.userLogin.text.toString()
+
+        binding.userLogin.isVisible = !editableMode
+        binding.userEmail.isVisible = !editableMode
+        binding.editProfile.isVisible = !editableMode
+
+        binding.btnSubmitChanges.isVisible = editableMode
+        binding.edtEmailAddress.isVisible = editableMode
+        binding.edtLogin.isVisible = editableMode
+        binding.btnDissmiss.isVisible = editableMode
+
+        if (editableMode){
+            binding.edtLogin.setText(login)
+            binding.edtEmailAddress.setText(email)
         }
     }
 
@@ -95,6 +128,10 @@ class AccountFragment : BaseFragment<FragmentAccountBinding>() {
 
     private fun loadAccountProperties() {
         viewModel.setStateEvent(AccountStateEvent.LoadAccountProperties)
+    }
+
+    private fun applyAccountChanges  (){
+
     }
 
     private fun intent() {

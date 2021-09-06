@@ -19,7 +19,6 @@ class SignUpUserUseCase @Inject constructor(private val authRepository: Authenti
         password: String,
         profileImage: File?
     ): Flow<DataState<UserDomain>> {
-        Log.d("AppDebug", "SignUpUserUseCase")
         return authRepository.signUpUser(username, email, fullName, password, profileImage)
             .flowOn(Dispatchers.IO)
     }
