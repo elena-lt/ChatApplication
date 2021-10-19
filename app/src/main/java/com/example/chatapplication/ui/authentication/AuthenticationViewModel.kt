@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
 import com.example.chatapplication.ui.authentication.mvi.AuthenticationState
+import com.example.chatapplication.utils.Constants
 import com.example.core.models.UserDomain
 import com.example.core.usecases.authentication.LoginUserUseCase
 import com.example.core.usecases.authentication.SignUpUserUseCase
 import com.example.core.utils.DataState
+import com.example.data.utils.Const
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -119,7 +121,7 @@ class AuthenticationViewModel @Inject constructor(
         if (username.isBlank() || password.isBlank()) {
             return setState(
                 AuthenticationState(
-                    error = AuthenticationState.Error(errorMessage = "All fields must be filled out")
+                    error = AuthenticationState.Error(errorMessage = Constants.FIELDS_NOT_FILLED_OUT_MSG)
                 )
             )
         }
