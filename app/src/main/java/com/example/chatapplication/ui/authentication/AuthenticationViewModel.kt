@@ -96,7 +96,7 @@ class AuthenticationViewModel @Inject constructor(
         if (login.isBlank() || email.isBlank() || fullName.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
             return setState(
                 AuthenticationState(
-                    error = AuthenticationState.Error(errorMessage = "All fields must be filled out")
+                    error = AuthenticationState.Error(errorMessage = Constants.FIELDS_NOT_FILLED_OUT_MSG)
                 )
             )
         }
@@ -104,7 +104,7 @@ class AuthenticationViewModel @Inject constructor(
         if (password != confirmPassword) {
             return setState(
                 AuthenticationState(
-                    error = AuthenticationState.Error(errorMessage = "Passwords are not the same")
+                    error = AuthenticationState.Error(errorMessage = Constants.PASSWORD_DOESNT_MATCH)
                 )
             )
         }
