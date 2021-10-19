@@ -2,25 +2,35 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="270dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="end"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
-    android:background="@drawable/message_bg_right"
-    android:padding="10dp">
+    android:padding="5dp">
+
 
     <TextView
         android:id="@+id/tv_message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/message_bg_right"
         android:fontFamily="@font/poppins"
+        android:padding="5dp"
         android:textColor="@color/text_color_gray"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline5"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Message content messgage content message content" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
