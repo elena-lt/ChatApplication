@@ -64,7 +64,7 @@ class ChatDataSourceImp @Inject constructor(
                 kotlin.runCatching {
                     QBRestChatService.getChatDialogs(null, requestBuilder).perform()
                 }.onSuccess {
-                    list = it.map {chatDialog ->
+                    list = it.map { chatDialog ->
                         ChatDialogMapper.toChatEntity(chatDialog)
                     }.toMutableList()
                 }.onFailure {
@@ -76,6 +76,7 @@ class ChatDataSourceImp @Inject constructor(
             override suspend fun saveFetchResult(data: MutableList<ChatEntity>?) {
                 data?.let {
                     for (item in it) {
+                        chatsDao.deleteAllChats()
                         chatsDao.insertChats(item)
                     }
                 }
@@ -83,24 +84,25 @@ class ChatDataSourceImp @Inject constructor(
         }.flow
     }
 
-    override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> = flow<DataState<MutableList<UserDomain>>> {
+    override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> =
+        flow<DataState<MutableList<UserDomain>>> {
 
-        emit(DataState.LOADING(true))
+            emit(DataState.LOADING(true))
 
-        kotlin.runCatching {
-            QBUsers.getUsers(null).perform()
-        }.onSuccess {
-            it?.let {
-                val usersList: MutableList<UserDomain> = it.map { user ->
-                    UserMapper.toUserDomain(user)
-                }.toMutableList()
-                emit(DataState.SUCCESS(usersList))
-            } ?: emit(DataState.SUCCESS(errorMessage = "empty list"))
+            kotlin.runCatching {
+                QBUsers.getUsers(null).perform()
+            }.onSuccess {
+                it?.let {
+                    val usersList: MutableList<UserDomain> = it.map { user ->
+                        UserMapper.toUserDomain(user)
+                    }.toMutableList()
+                    emit(DataState.SUCCESS(usersList))
+                } ?: emit(DataState.SUCCESS(errorMessage = "empty list"))
 
-        }.onFailure {
-            emit(DataState.ERROR(it.toString()))
+            }.onFailure {
+                emit(DataState.ERROR(it.toString()))
+            }
         }
-    }
 
     override suspend fun startNewChat(userId: Int): Flow<DataState<ChatDialogDomain>> = flow {
         emit(DataState.LOADING(true))
@@ -111,6 +113,7 @@ class ChatDataSourceImp @Inject constructor(
                 override fun onSuccess(p0: QBChatDialog?, p1: Bundle?) {
                     (DataState.SUCCESS(ChatDialogMapper.toChatDialogDomain(p0)))
                 }
+
                 override fun onError(p0: QBResponseException?) {
                     Log.d("AppDebug", "onError: ${p0?.message}")
                 }
@@ -118,7 +121,7 @@ class ChatDataSourceImp @Inject constructor(
     }
 
     override suspend fun retrieveChatHistory(chatId: String): Flow<DataState<MutableList<ChatMessageDomain>>> =
-        flow <DataState<MutableList<ChatMessageDomain>>> {
+        flow<DataState<MutableList<ChatMessageDomain>>> {
             emit(DataState.LOADING(true))
 
             val dialog = getDialogById(chatId)
@@ -129,7 +132,7 @@ class ChatDataSourceImp @Inject constructor(
                 kotlin.runCatching {
                     QBRestChatService.getDialogMessages(dialog, messageGetBuilder).perform()
                 }.onSuccess {
-                    val list = it.map {chatMessage ->
+                    val list = it.map { chatMessage ->
                         ChatMessageMapper.toChatMessageDomain(chatMessage)
                     }.toMutableList()
                     emit(DataState.SUCCESS(data = list))

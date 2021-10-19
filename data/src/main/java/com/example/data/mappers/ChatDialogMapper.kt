@@ -39,10 +39,10 @@ object ChatDialogMapper {
     }
 
 
-    fun toChatEntity(chat: QBChatDialog): ChatEntity {
+    fun toChatEntity(chat: QBChatDialog?): ChatEntity {
         return ChatEntity(
-            chat.dialogId,
-            chat.lastMessage,
+            chat?.dialogId ?: "-1",
+            chat?.lastMessage ?: "",
 //            chat.lastMessageDateSent,
 //            chat.lastMessageUserId,
 //            chat.photo,
