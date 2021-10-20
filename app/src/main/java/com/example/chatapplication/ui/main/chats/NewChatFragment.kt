@@ -1,5 +1,6 @@
 package com.example.chatapplication.ui.main.chats
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,8 +9,10 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
+import com.example.chatapplication.R
 import com.example.chatapplication.databinding.FragmentNewChatBinding
 import com.example.chatapplication.models.Models
 import com.example.chatapplication.recyclerViewUtils.OnClickListener
@@ -37,6 +40,7 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
         subscribeToObservers()
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     private fun subscribeToObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -50,6 +54,11 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
                     viewModel.viewState.collect { viewState ->
                         viewState.users?.users?.let{
                             usersRvAdapter.submitList(it)
+                        }
+
+                        viewState.openChatDialog?.let {
+                            Log.d("AppDebug", "subscribeToObservers: ${it.chatDialog}")
+                            findNavController().navigate(R.id.action_newChatFragment_to_activeChatFragment)
                         }
                     }
                 }

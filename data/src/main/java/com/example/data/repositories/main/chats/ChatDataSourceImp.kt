@@ -29,10 +29,8 @@ import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.core.request.QBRequestGetBuilder
 import com.quickblox.users.QBUsers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.jivesoftware.smack.chat.ChatManager
 import javax.inject.Inject
 import kotlin.math.log
@@ -79,7 +77,10 @@ class ChatDataSourceImp @Inject constructor(
                 data?.let {
                     Log.d(TAG, "saveFetchResult: ${it.toString()}")
                     for (item in it) {
-                        Log.d(TAG, "saveFetchResult after deleting: ${chatsDao.getAllChats().toString()}")
+                        Log.d(
+                            TAG,
+                            "saveFetchResult after deleting: ${chatsDao.getAllChats().toString()}"
+                        )
 //                        chatsDao.insertChats(item)
                     }
                 }
@@ -107,21 +108,19 @@ class ChatDataSourceImp @Inject constructor(
             }
         }
 
-    override suspend fun startNewChat(userId: Int): Flow<DataState<ChatDialogDomain>> = flow {
-        emit(DataState.LOADING(true))
-        val dialog: QBChatDialog = DialogUtils.buildPrivateDialog(userId)
+    override suspend fun startNewChat(userId: Int): Flow<DataState<ChatDialogDomain>> =
+        flow<DataState<ChatDialogDomain>> {
+            emit(DataState.LOADING(true))
+            val dialog: QBChatDialog? = DialogUtils.buildPrivateDialog(userId)
 
-        QBRestChatService.createChatDialog(dialog)
-            .performAsync(object : QBEntityCallback<QBChatDialog> {
-                override fun onSuccess(p0: QBChatDialog?, p1: Bundle?) {
-                    (DataState.SUCCESS(ChatDialogMapper.toChatDialogDomain(p0)))
-                }
-
-                override fun onError(p0: QBResponseException?) {
-                    Log.d("AppDebug", "onError: ${p0?.message}")
-                }
-            })
-    }
+            kotlin.runCatching {
+                QBRestChatService.createChatDialog(dialog).perform()
+            }.onFailure {
+                emit(DataState.ERROR(errorMessage = it.message ?: "UNKNOWN ERROR"))
+            }.onSuccess {
+                emit(DataState.SUCCESS(ChatDialogMapper.toChatDialogDomain(it)))
+            }
+        }
 
     override suspend fun retrieveChatHistory(chatId: String): Flow<DataState<MutableList<ChatMessageDomain>>> =
         flow<DataState<MutableList<ChatMessageDomain>>> {
