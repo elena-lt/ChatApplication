@@ -8,17 +8,17 @@ object ChatDialogMapper {
 
     fun toChatDialogDomain(chat: QBChatDialog?): ChatDialogDomain {
         return ChatDialogDomain(
-            chat?.dialogId,
-            chat?.lastMessage,
-            chat?.lastMessageDateSent ?: 0,
-//            chat?.lastMessageUserId,
-//            chat?.photo,
-//            chat?.userId,
-//            chat?.roomJid,
-            chat?.unreadMessageCount,
-            chat?.name,
-//            chat?.occupants,
-//            chat?.type?.code
+            dialogId = chat?.dialogId,
+            lastMessage = chat?.lastMessage,
+            lastMessageDateSent = chat?.lastMessageDateSent ?: 0,
+            lastMessageUserId = chat?.lastMessageUserId,
+            photo = chat?.photo,
+            userId = chat?.userId,
+            roomJid = chat?.roomJid,
+            unreadMessageCount = chat?.unreadMessageCount,
+            name = chat?.name,
+            occupantsIds = chat?.occupants,
+            type = chat?.type?.code
         )
     }
 

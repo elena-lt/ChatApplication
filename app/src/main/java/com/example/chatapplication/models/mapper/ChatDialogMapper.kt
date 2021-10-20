@@ -10,14 +10,14 @@ object ChatDialogMapper {
             dialogId = chat.dialogId,
             lastMessage = chat.lastMessage,
             lastMessageDateSent = chat.lastMessageDateSent,
-//            chat.lastMessageUserId,
-//            chat.photo,
-//            chat.userId,
-//            chat.roomJid,
+            chat.lastMessageUserId,
+            chat.photo,
+            chat.userId,
+            chat.roomJid,
             unreadMessageCount = chat.unreadMessageCount,
             name = chat.name,
-//            chat.occupantsIds,
-//            chat.type
+            occupantsIds = chat.occupantsIds,
+            chat.type
         )
     }
 }
