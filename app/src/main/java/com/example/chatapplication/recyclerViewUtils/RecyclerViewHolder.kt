@@ -26,7 +26,8 @@ sealed class RecyclerViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(
     ): RecyclerViewHolder(binding){
 
         fun bind (chatItem: Models.Chat){
-            binding.tvUserName.text = chatItem.dialogId
+            binding.tvUserName.text = chatItem.name
+            binding.tvLastMessage.text = chatItem.lastMessage
             binding.root.setOnClickListener {
                 onClickListener?.onItemSelected(adapterPosition, chatItem)
             }
