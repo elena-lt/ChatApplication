@@ -11,14 +11,14 @@ object ChatDialogMapper {
             chat?.dialogId,
             chat?.lastMessage,
             chat?.lastMessageDateSent ?: 0,
-            chat?.lastMessageUserId,
-            chat?.photo,
-            chat?.userId,
-            chat?.roomJid,
+//            chat?.lastMessageUserId,
+//            chat?.photo,
+//            chat?.userId,
+//            chat?.roomJid,
             chat?.unreadMessageCount,
             chat?.name,
-            chat?.occupants,
-            chat?.type?.code
+//            chat?.occupants,
+//            chat?.type?.code
         )
     }
 
@@ -26,31 +26,27 @@ object ChatDialogMapper {
         return ChatDialogDomain(
             chat.dialogId,
             chat.lastMessage,
-//            chat.lastMessageDateSent,
+            chat.lastMessageDateSent,
 //            chat.lastMessageUserId,
 //            chat.photo,
 //            chat.userId,
 //            chat.roomJid,
-//            chat.unreadMessageCount,
-//            chat.name,
+            chat.unreadMessageCount,
+            chat.name,
 //            null,
 //            chat.type
         )
     }
 
-
     fun toChatEntity(chat: QBChatDialog?): ChatEntity {
-        return ChatEntity(
-            chat?.dialogId ?: "-1",
-            chat?.lastMessage ?: "",
-//            chat.lastMessageDateSent,
-//            chat.lastMessageUserId,
-//            chat.photo,
-//            chat.userId,
-//            chat.roomJid,
-//            chat.unreadMessageCount,
-//            chat.name,
-//            null
-        )
+         return chat?.let {
+            return@let ChatEntity(
+                it.dialogId,
+                it.lastMessage,
+                it.lastMessageDateSent,
+                it.unreadMessageCount,
+                it.name,
+            )
+        } ?: return ChatEntity("-1")
     }
 }

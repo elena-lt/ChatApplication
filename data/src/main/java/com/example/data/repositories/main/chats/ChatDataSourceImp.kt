@@ -56,6 +56,7 @@ class ChatDataSourceImp @Inject constructor(
                 val list = chatsDao.getChats().map {
                     ChatDialogMapper.toChatDialogDomain(it)
                 }.toMutableList()
+                Log.d(TAG, "loadFromDB: ${list.toString()}")
                 return DataState.SUCCESS(list)
             }
 
@@ -74,10 +75,12 @@ class ChatDataSourceImp @Inject constructor(
             }
 
             override suspend fun saveFetchResult(data: MutableList<ChatEntity>?) {
+                chatsDao.deleteAllChats()
                 data?.let {
+                    Log.d(TAG, "saveFetchResult: ${it.toString()}")
                     for (item in it) {
-                        chatsDao.deleteAllChats()
-                        chatsDao.insertChats(item)
+                        Log.d(TAG, "saveFetchResult after deleting: ${chatsDao.getAllChats().toString()}")
+//                        chatsDao.insertChats(item)
                     }
                 }
             }

@@ -80,7 +80,6 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
                     viewModel.viewState.collect { viewState ->
                         viewState.chats?.let { chats ->
                             chatsRvAdapter.submitList(chats.chats)
-                            Log.d("AppDebug", "subscribeToObservers: ${chats.chats}")
                         }
 
                         viewState.currUser?.user?.let {

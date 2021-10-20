@@ -7,17 +7,17 @@ object ChatDialogMapper {
 
     fun toChatDialog(chat: ChatDialogDomain): Models.Chat {
         return Models.Chat(
-            chat.dialogId,
-            chat.lastMessage,
-            chat.lastMessageDateSent,
-            chat.lastMessageUserId,
-            chat.photo,
-            chat.userId,
-            chat.roomJid,
-            chat.unreadMessageCount,
-            chat.name,
-            chat.occupantsIds,
-            chat.type
+            dialogId = chat.dialogId,
+            lastMessage = chat.lastMessage,
+            lastMessageDateSent = chat.lastMessageDateSent,
+//            chat.lastMessageUserId,
+//            chat.photo,
+//            chat.userId,
+//            chat.roomJid,
+            unreadMessageCount = chat.unreadMessageCount,
+            name = chat.name,
+//            chat.occupantsIds,
+//            chat.type
         )
     }
 }
