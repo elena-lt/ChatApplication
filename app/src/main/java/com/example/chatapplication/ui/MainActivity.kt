@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
     override fun onDataStateChanged(dataState: DataState<*>) {
         dataState.loading.let {
-            Log.d(TAG, "loading.....")
+            binding.mainProgressBar.isVisible = it
         }
 
         dataState.errorMessage?.let {
