@@ -2,13 +2,19 @@
 
 package com.example.data.repositories.authentication
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.core.models.UserDomain
 import com.example.core.utils.DataState
 import com.example.data.mappers.UserMapper
-import com.example.data.repositories.NetworkBoundResource
 import com.example.data.sessionManager.SessionManger
+import com.example.data.sessionManager.chatServiceManager.ChatServiceManager
+import com.example.data.sessionManager.keyManager.KeyManager
+import com.quickblox.auth.QBAuth
+import com.quickblox.auth.session.BaseService
+import com.quickblox.auth.session.QBSession
 import com.quickblox.chat.QBChatService
 import com.quickblox.content.QBContent
 import com.quickblox.core.QBEntityCallback
@@ -17,7 +23,6 @@ import com.quickblox.users.QBUsers
 import com.quickblox.users.QBUsers.updateUser
 import com.quickblox.users.model.QBUser
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import java.io.File
 import javax.inject.Inject
@@ -27,9 +32,11 @@ import kotlin.coroutines.suspendCoroutine
 
 class AuthenticationDataSourceImp @Inject constructor(
     val sessionManager: SessionManger,
-    val qbChatService: QBChatService
+    val qbChatService: QBChatService,
+    private val keyManager: KeyManager
 ) : AuthenticationDataSource {
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @ExperimentalCoroutinesApi
     override suspend fun signUpUser(
         username: String,
@@ -91,6 +98,7 @@ class AuthenticationDataSourceImp @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override suspend fun loginUser(login: String, password: String): Flow<DataState<UserDomain>> =
         flow {
             emit(DataState.LOADING(true))
@@ -100,28 +108,11 @@ class AuthenticationDataSourceImp @Inject constructor(
             kotlin.runCatching {
                 query.perform()
             }.onSuccess {
+                keyManager.encryptData(it.id.toString(), password)
+                sessionManager.createChatServiceWithUser(user)
                 emit(DataState.SUCCESS(UserMapper.toUserDomain(it)))
-                createChatService(user)
             }.onFailure {
                 emit(DataState.ERROR<UserDomain>(errorMessage = it.toString()))
             }
         }
-
-    private fun createChatService(user: QBUser) {
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-                qbChatService.isReconnectionAllowed = true
-                qbChatService.setUseStreamManagement(true)
-                qbChatService.login(user, object : QBEntityCallback<Void> {
-                    override fun onSuccess(p0: Void?, p1: Bundle?) {
-                        Log.d("AppDebug", "onSuccess: chat service created")
-                    }
-
-                    override fun onError(p0: QBResponseException?) {
-                        Log.d("AppDebug", "onError: chat service not created ${p0?.message}")
-                    }
-                })
-            }
-        }
-    }
 }
