@@ -2,7 +2,6 @@ package com.example.chatapplication.ui.main.chats
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -10,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Dao
 import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.FragmentChatsBinding
@@ -18,15 +16,9 @@ import com.example.chatapplication.models.Models
 import com.example.chatapplication.recyclerViewUtils.OnClickListener
 import com.example.chatapplication.recyclerViewUtils.RecyclerViewAdapter
 import com.example.chatapplication.ui.base.BaseChatsFragment
-import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
 import com.example.chatapplication.ui.main.chats.mvi.ChatsViewState
 import com.example.data.persistance.ChatsDao
-import com.quickblox.chat.QBChatService
-import com.quickblox.chat.QBIncomingMessagesManager
-import com.quickblox.chat.exception.QBChatException
-import com.quickblox.chat.listeners.QBChatDialogMessageListener
-import com.quickblox.chat.model.QBChatMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect

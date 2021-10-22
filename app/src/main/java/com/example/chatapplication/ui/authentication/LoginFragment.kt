@@ -2,7 +2,6 @@ package com.example.chatapplication.ui.authentication
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -16,7 +15,6 @@ import com.example.chatapplication.models.mapper.UserMapper
 import com.example.chatapplication.ui.authentication.mvi.AuthenticationState
 import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
 import com.example.chatapplication.ui.base.BaseAuthFragment
-import com.example.chatapplication.utils.Constants.TAG
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect

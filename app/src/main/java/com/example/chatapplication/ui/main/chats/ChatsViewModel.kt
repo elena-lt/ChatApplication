@@ -2,7 +2,6 @@ package com.example.chatapplication.ui.main.chats
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.models.Models
 import com.example.chatapplication.models.mapper.ChatDialogMapper
 import com.example.chatapplication.models.mapper.ChatMessageMapper
 import com.example.chatapplication.models.mapper.UserMapper

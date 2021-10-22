@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -18,14 +17,10 @@ import com.example.chatapplication.models.Models
 import com.example.chatapplication.recyclerViewUtils.OnClickListener
 import com.example.chatapplication.recyclerViewUtils.RecyclerViewAdapter
 import com.example.chatapplication.ui.base.BaseChatsFragment
-import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
-import com.example.chatapplication.ui.main.chats.mvi.ChatsViewState
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.jivesoftware.smackx.chatstates.ChatState
 
 @InternalCoroutinesApi
 class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickListener {

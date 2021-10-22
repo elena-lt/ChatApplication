@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -19,8 +18,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.databinding.FragmentRegistrationBinding
 import com.example.chatapplication.models.mapper.UserMapper
-import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
 import com.example.chatapplication.ui.authentication.mvi.AuthenticationState
+import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
 import com.example.chatapplication.ui.base.BaseAuthFragment
 import com.example.chatapplication.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint

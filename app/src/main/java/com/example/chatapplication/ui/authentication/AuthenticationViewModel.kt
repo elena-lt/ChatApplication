@@ -1,16 +1,14 @@
 package com.example.chatapplication.ui.authentication
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
 import com.example.chatapplication.ui.authentication.mvi.AuthenticationState
+import com.example.chatapplication.ui.authentication.mvi.AuthenticationStateEvent
 import com.example.chatapplication.utils.Constants
 import com.example.core.models.UserDomain
 import com.example.core.usecases.authentication.LoginUserUseCase
 import com.example.core.usecases.authentication.SignUpUserUseCase
 import com.example.core.utils.DataState
-import com.example.data.utils.Const
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.*

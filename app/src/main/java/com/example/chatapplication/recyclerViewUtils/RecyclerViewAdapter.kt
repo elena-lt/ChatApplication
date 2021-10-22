@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chatapplication.databinding.ItemChatLayoutBinding
 import com.example.chatapplication.databinding.ItemUserLayoutBinding
 import com.example.chatapplication.models.Models
-import java.lang.IllegalArgumentException
 
 class RecyclerViewAdapter(
     private val onClickListener: OnClickListener? = null,

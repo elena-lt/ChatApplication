@@ -2,7 +2,6 @@ package com.example.chatapplication.ui.main.chats.mvi
 
 import com.example.chatapplication.models.ChatMessage
 import com.example.chatapplication.models.Models
-import com.quickblox.chat.model.QBChatDialog
 
 data class ChatsViewState(
     val currUser: CurrLoggedInUser? = null,

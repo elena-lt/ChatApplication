@@ -54,7 +54,6 @@ class ChatDataSourceImp @Inject constructor(
                 val list = chatsDao.getChats().map {
                     ChatDialogMapper.toChatDialogDomain(it)
                 }.toMutableList()
-                Log.d(TAG, "loadFromDB: ${list.toString()}")
                 return DataState.SUCCESS(list)
             }
 
@@ -75,13 +74,8 @@ class ChatDataSourceImp @Inject constructor(
             override suspend fun saveFetchResult(data: MutableList<ChatEntity>?) {
                 chatsDao.deleteAllChats()
                 data?.let {
-                    Log.d(TAG, "saveFetchResult: ${it.toString()}")
                     for (item in it) {
-                        Log.d(
-                            TAG,
-                            "saveFetchResult after deleting: ${chatsDao.getAllChats().toString()}"
-                        )
-//                        chatsDao.insertChats(item)
+                        chatsDao.insertChats(item)
                     }
                 }
             }
@@ -166,8 +160,10 @@ class ChatDataSourceImp @Inject constructor(
     ): Flow<DataState<String>> = flow<DataState<String>> {
         val dialog = QBChatDialog()
         dialog.setOccupantsIds(occupantsIds)
-        dialog.initForChat(chatId, QBDialogType.PRIVATE, QBChatService.getInstance())
 
+        Log.d ("AppDebug", "QBChatService is null: ${QBChatService.getInstance().user == null }")
+
+        dialog.initForChat(chatId, QBDialogType.PRIVATE, QBChatService.getInstance())
         val chatMessage = QBChatMessage()
         chatMessage.body = messageContent
         chatMessage.setSaveToHistory(true)

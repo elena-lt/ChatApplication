@@ -1,9 +1,9 @@
 package com.example.chatapplication.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,17 +11,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import com.example.chatapplication.BuildConfig.*
 import com.example.chatapplication.R
 import com.example.chatapplication.databinding.ActivityMainBinding
-
 import com.example.chatapplication.utils.Constants.TAG
 import com.example.core.utils.DataState
 import com.example.data.sessionManager.SessionManger
 import com.example.data.utils.ConnectivityManager
-import com.quickblox.auth.session.QBSettings
-import com.quickblox.chat.QBChatService
-import com.quickblox.core.LogLevel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect

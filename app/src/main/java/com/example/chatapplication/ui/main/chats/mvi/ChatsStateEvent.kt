@@ -1,7 +1,5 @@
 package com.example.chatapplication.ui.main.chats.mvi
 
-import com.example.chatapplication.models.Models
-
 sealed class ChatsStateEvent {
 
     object LoadCurrUserAccount: ChatsStateEvent()

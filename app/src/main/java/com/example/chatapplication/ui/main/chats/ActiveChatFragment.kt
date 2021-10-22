@@ -2,7 +2,6 @@ package com.example.chatapplication.ui.main.chats
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -14,20 +13,9 @@ import com.example.chatapplication.databinding.FragmentActiveChatBinding
 import com.example.chatapplication.recyclerViewUtils.ChatMessagesAdapter
 import com.example.chatapplication.ui.base.BaseChatsFragment
 import com.example.chatapplication.ui.main.chats.mvi.ChatsStateEvent
-import com.quickblox.chat.QBChatService
-import com.quickblox.chat.QBIncomingMessagesManager
-import com.quickblox.chat.QBRestChatService
-import com.quickblox.chat.exception.QBChatException
-import com.quickblox.chat.listeners.QBChatDialogMessageListener
-import com.quickblox.chat.listeners.QBChatDialogMessageSentListener
-import com.quickblox.chat.model.QBChatDialog
-import com.quickblox.chat.model.QBChatMessage
-import com.quickblox.core.QBEntityCallback
-import com.quickblox.core.exception.QBResponseException
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @InternalCoroutinesApi
 class ActiveChatFragment : BaseChatsFragment<FragmentActiveChatBinding>() {

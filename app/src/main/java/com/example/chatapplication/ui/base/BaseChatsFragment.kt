@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.ui.OnDataStateChangeListener
-import com.example.chatapplication.ui.authentication.AuthenticationViewModel
 import com.example.chatapplication.ui.main.chats.ChatsViewModel
 import com.example.chatapplication.utils.Constants
 import kotlinx.coroutines.InternalCoroutinesApi
