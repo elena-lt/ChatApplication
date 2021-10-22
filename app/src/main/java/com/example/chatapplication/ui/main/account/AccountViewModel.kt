@@ -1,8 +1,6 @@
 package com.example.chatapplication.ui.main.account
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.chatapplication.models.Models
 import com.example.chatapplication.models.mapper.UserMapper
 import com.example.chatapplication.ui.base.BaseViewModel
 import com.example.chatapplication.ui.main.account.mvi.AccountStateEvent

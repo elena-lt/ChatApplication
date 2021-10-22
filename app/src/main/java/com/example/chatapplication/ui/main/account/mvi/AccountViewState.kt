@@ -1,7 +1,6 @@
 package com.example.chatapplication.ui.main.account.mvi
 
 import com.example.chatapplication.models.Models
-import com.example.core.models.UserDomain
 
 data class AccountViewState(
     val user: Models.User? = null,

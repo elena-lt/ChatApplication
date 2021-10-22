@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -19,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.example.chatapplication.databinding.FragmentAccountBinding
-import com.example.chatapplication.models.Models
 import com.example.chatapplication.ui.base.BaseFragment
 import com.example.chatapplication.ui.main.account.mvi.AccountStateEvent
 import com.example.chatapplication.utils.Constants.GALLERY_REQUEST_CODE
@@ -27,7 +25,10 @@ import com.quickblox.auth.session.QBSessionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
