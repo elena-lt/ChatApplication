@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
         Log.d(TAG, "onCreate: ${sessionManager.currUser.value}")
         initSessionManager()
-        setupQuickBlox()
         subscribeToObservers()
 
     }
@@ -95,14 +94,6 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         }
     }
 
-    private fun setupQuickBlox() {
-        QBSettings.getInstance()
-            .init(applicationContext, QB_APPLICATION_ID, QB_AUTH_KEY, QB_AUTH_SECRET)
-        QBSettings.getInstance().accountKey = QB_ACCOUNT_KEY
-        QBSettings.getInstance().logLevel = LogLevel.DEBUG
-        QBChatService.setDebugEnabled(true)
-    }
-
     private fun initSessionManager() {
 //        sessionManager.registerListener()
 //        sessionManager.createSessionManagerListener()
@@ -132,7 +123,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
     override fun onDataStateChanged(dataState: DataState<*>) {
         dataState.loading.let {
-            binding.mainProgressBar.isVisible = it
+            Log.d(TAG, "onDataStateChanged: loading $it")
+           binding.mainProgressBar.isVisible = it
         }
 
         dataState.errorMessage?.let {
