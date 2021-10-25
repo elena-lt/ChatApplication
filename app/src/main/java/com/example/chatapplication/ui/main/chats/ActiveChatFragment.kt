@@ -28,6 +28,7 @@ class ActiveChatFragment : BaseChatsFragment<FragmentActiveChatBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUserData()
         retrieveChatHistory()
         setupRvAdapter()
         handleOnClickEvents()
@@ -68,6 +69,12 @@ class ActiveChatFragment : BaseChatsFragment<FragmentActiveChatBinding>() {
         }
     }
 
+    private fun setupUserData() {
+        viewModel.currentState.openChatDialog?.chatDialog?.let {
+            binding.tvMsgReceiverName.text = it.name
+
+        }
+    }
 
     private fun retrieveChatHistory() {
         viewModel.setStateEvent(
