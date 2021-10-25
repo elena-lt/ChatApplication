@@ -108,7 +108,6 @@ class ChatsViewModel @Inject constructor(
                             )
                         )
                     )
-                    Log.d("AppDebug", "START NEW DIALOG VIEW STATE: ${currentState.openChatDialog.toString()}")
                 }
             }
         }

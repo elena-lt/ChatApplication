@@ -52,7 +52,6 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
                         }
 
                         viewState.openChatDialog?.let {
-                            Log.d("AppDebug", "subscribeToObservers: ${it.chatDialog}")
                             findNavController().navigate(R.id.action_newChatFragment_to_activeChatFragment)
                         }
                     }
