@@ -1,5 +1,6 @@
 package com.example.data.repositories.main.chats
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import com.example.core.models.ChatDialogDomain
@@ -13,6 +14,7 @@ import com.example.data.persistance.ChatsDao
 import com.example.data.persistance.entities.ChatEntity
 import com.example.data.repositories.NetworkBoundResource
 import com.example.data.utils.ConnectivityManager
+import com.example.data.utils.Const
 import com.example.data.utils.Const.MESSAGE_DELIVERED
 import com.example.data.utils.Const.MESSAGE_NOT_DELIVERED
 import com.example.data.utils.Const.TAG
@@ -38,6 +40,7 @@ import kotlin.math.log
 @ExperimentalCoroutinesApi
 class ChatDataSourceImp @Inject constructor(
     private val connectivityManager: ConnectivityManager,
+    private val sharedPreferences: SharedPreferences,
     private val chatsDao: ChatsDao
 ) : ChatsDataSource {
 
@@ -89,10 +92,13 @@ class ChatDataSourceImp @Inject constructor(
 
             kotlin.runCatching {
                 QBUsers.getUsers(null).perform()
-            }.onSuccess {
-                it?.let {
-                    val usersList: MutableList<UserDomain> = it.map { user ->
-                        UserMapper.toUserDomain(user)
+            }.onSuccess {data  ->
+                data?.let {userList ->
+                    val currUserLogin = sharedPreferences.getString(Const.SP_USER_LOGIN, "")!!
+                    val usersList: MutableList<UserDomain> = userList.filter {
+                        it.login != currUserLogin
+                    }.map { userItem ->
+                        UserMapper.toUserDomain(userItem)
                     }.toMutableList()
                     emit(DataState.SUCCESS(usersList))
                 } ?: emit(DataState.SUCCESS(errorMessage = "empty list"))
@@ -161,7 +167,7 @@ class ChatDataSourceImp @Inject constructor(
         val dialog = QBChatDialog()
         dialog.setOccupantsIds(occupantsIds)
 
-        Log.d ("AppDebug", "QBChatService is null: ${QBChatService.getInstance().user == null }")
+        Log.d("AppDebug", "QBChatService is null: ${QBChatService.getInstance().user == null}")
 
         dialog.initForChat(chatId, QBDialogType.PRIVATE, QBChatService.getInstance())
         val chatMessage = QBChatMessage()

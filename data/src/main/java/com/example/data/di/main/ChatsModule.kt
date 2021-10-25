@@ -1,5 +1,6 @@
 package com.example.data.di.main
 
+import android.content.SharedPreferences
 import com.example.core.repositories.ChatsRepository
 import com.example.data.persistance.AppDatabase
 import com.example.data.persistance.ChatsDao
@@ -27,8 +28,9 @@ class ChatsModule {
     @Singleton
     fun provideChatDataSource(
         connectivityManager: ConnectivityManager,
+        sharedPreferences: SharedPreferences,
         chatsDao: ChatsDao
-    ): ChatsDataSource = ChatDataSourceImp(connectivityManager, chatsDao)
+    ): ChatsDataSource = ChatDataSourceImp(connectivityManager, sharedPreferences, chatsDao)
 
     @Provides
     @Singleton
