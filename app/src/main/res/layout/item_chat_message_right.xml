@@ -17,7 +17,7 @@
         android:background="@drawable/message_bg_right"
         android:fontFamily="@font/poppins"
         android:padding="5dp"
-        android:textColor="@color/text_color_gray"
+        android:textColor="@color/text_color_light_gray"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -13,7 +13,7 @@ sealed class RecyclerViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(
         private val onClickListener: OnClickListener?
     ) : RecyclerViewHolder(binding) {
         fun bind(user: Models.User) {
-            binding.tvUserName.text = user.login
+            binding.tvUserName.text = user.fullName
             binding.root.setOnClickListener {
                 onClickListener?.onItemSelected(adapterPosition, user)
             }
