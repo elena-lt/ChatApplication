@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
      @Insert (onConflict = OnConflictStrategy.REPLACE)
      suspend fun insertChats(chat: ChatEntity)
 
-     @Query ("SELECT * FROM chats")
-     fun getAllChats(): Flow<List<ChatEntity>>
+//     @Query ("SELECT * FROM chats")
+//     fun getAllChats(): Flow<List<ChatEntity>>
 
      @Query ("SELECT * FROM chats")
      fun getChats(): List<ChatEntity>
