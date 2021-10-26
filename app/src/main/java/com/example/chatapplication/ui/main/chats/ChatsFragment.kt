@@ -2,6 +2,7 @@ package com.example.chatapplication.ui.main.chats
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -35,7 +36,7 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
     override val bindingInflater: (LayoutInflater) -> ViewBinding
         get() = FragmentChatsBinding::inflate
 
-    private lateinit var chatsRvAdapter: RecyclerViewAdapter
+    lateinit var chatsRvAdapter: RecyclerViewAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,7 +72,7 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
                 launch {
                     viewModel.viewState.collect { viewState ->
                         viewState.chats?.let { chats ->
-                            chatsRvAdapter.submitList(chats.chats)
+                            setUpRvData(chats)
                         }
 
                         viewState.currUser?.user?.let {
@@ -81,6 +82,19 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
                 }
             }
         }
+    }
+
+    private fun setUpRvData(chats: ChatsViewState.Chats) {
+        if (chats.chats.isEmpty()) handleEmptyList()
+        else chatsRvAdapter.apply {
+            submitList(chats.chats)
+            notifyDataSetChanged()
+        }
+    }
+
+    private fun handleEmptyList() {
+        binding.rvChats.visibility = View.GONE
+        binding.tvNoChats.visibility = View.VISIBLE
     }
 
     private fun loadUserAccountData(){
@@ -95,7 +109,6 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
             layoutManager = LinearLayoutManager(this@ChatsFragment.context)
             chatsRvAdapter = RecyclerViewAdapter(this@ChatsFragment)
             adapter = chatsRvAdapter
-
         }
     }
 
@@ -104,6 +117,7 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener
         viewModel.setViewState(
             viewModel.currentState.copy(openChatDialog = ChatsViewState.OpenChatDialog(chat, null))
         )
+        Log.d("AppDebug", "onItemSelected: ${viewModel.currentState.toString()}")
         findNavController().navigate(R.id.action_chatsFragment_to_activeChatFragment)
     }
 }

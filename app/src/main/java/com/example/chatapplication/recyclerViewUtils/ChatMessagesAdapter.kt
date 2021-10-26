@@ -1,5 +1,7 @@
 package com.example.chatapplication.recyclerViewUtils
 
+import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,14 +13,16 @@ import com.example.chatapplication.databinding.ItemChatMessageRightBinding
 import com.example.chatapplication.models.ChatMessage
 import com.example.chatapplication.recyclerViewUtils.MessagesViewHolder.ReceivedMessageViewHolder
 import com.example.chatapplication.recyclerViewUtils.MessagesViewHolder.SentMessageViewHolder
+import com.example.data.utils.Const
 import com.quickblox.auth.session.QBSessionManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class ChatMessagesAdapter : RecyclerView.Adapter<MessagesViewHolder>() {
-    private val userLogin = QBSessionManager.getInstance().activeSession.userId
+class ChatMessagesAdapter (private val currUserId: Int): RecyclerView.Adapter<MessagesViewHolder>() {
 
     companion object {
-        const val MSG_LEFT = 0
-        const val MSG_RIGHT = 1
+        const val MSG_LEFT = 10
+        const val MSG_RIGHT = 15
     }
 
     private val diffUtil = object : DiffUtil.ItemCallback<ChatMessage>() {
@@ -70,11 +74,11 @@ class ChatMessagesAdapter : RecyclerView.Adapter<MessagesViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position].senderId) {
-            userLogin -> MSG_RIGHT
+            currUserId -> MSG_RIGHT
+
             else -> MSG_LEFT
         }
     }
-
 }
 
 sealed class MessagesViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(binding.root) {

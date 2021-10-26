@@ -32,20 +32,22 @@ object ChatDialogMapper {
 //            chat.userId,
 //            chat.roomJid,
             chat.unreadMessageCount,
-            chat.name,
-//            null,
+            name = chat.name,
+            occupantsIds = listOf(chat.occupant1, chat.occupant2)
 //            chat.type
         )
     }
 
     fun toChatEntity(chat: QBChatDialog?): ChatEntity {
-         return chat?.let {
+        return chat?.let {
             return@let ChatEntity(
                 it.dialogId,
                 it.lastMessage,
                 it.lastMessageDateSent,
                 it.unreadMessageCount,
                 it.name,
+                it.occupants[0],
+                it.occupants[1]
             )
         } ?: return ChatEntity("-1")
     }

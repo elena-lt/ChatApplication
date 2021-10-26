@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class ChatEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "dialog_id")
-    var dialogId: String ,
+    var dialogId: String,
 
     @ColumnInfo(name = "last_message")
     val lastMessage: String? = null,
@@ -33,6 +33,12 @@ data class ChatEntity(
 
     @ColumnInfo(name = "name")
     val name: String = "",
+
+    @ColumnInfo(name = "occupant1")
+    val occupant1: Int = -1,
+
+    @ColumnInfo(name = "occupant2")
+    val occupant2: Int = -1,
 
 //    @ColumnInfo(name = "msg_recipient")
 //    val msg_recipient: Int,
