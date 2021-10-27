@@ -83,5 +83,4 @@ class NewChatFragment : BaseChatsFragment<FragmentNewChatBinding>(), OnClickList
         val user = item as Models.User
         startPrivateChat(user.id)
     }
-
 }

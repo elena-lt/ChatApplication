@@ -30,9 +30,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(), OnClickListener {
 
-    @Inject
-    lateinit var chatDao: ChatsDao
-
     override val bindingInflater: (LayoutInflater) -> ViewBinding
         get() = FragmentChatsBinding::inflate
 
