@@ -17,7 +17,7 @@ class ChatsRepositoryImp @Inject constructor(
 
 
     override suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>> =
-        dataSource.findUser()
+        dataSource.loadAllUsers()
 
     override suspend fun startNewChat(userId: Int): Flow<DataState<ChatDialogDomain>> =
         dataSource.startNewChat(userId)

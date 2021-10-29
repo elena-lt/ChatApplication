@@ -20,10 +20,12 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="10dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/user_default_img"
+            android:scaleType="centerCrop"
             android:src="@drawable/user_default_img"/>
 
         <TextView

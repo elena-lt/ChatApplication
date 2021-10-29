@@ -17,7 +17,8 @@ object ChatDialogMapper {
             unreadMessageCount = chat.unreadMessageCount,
             name = chat.name,
             occupantsIds = chat.occupantsIds,
-            chat.type
+            chat.type,
+            chat.img
         )
     }
 }

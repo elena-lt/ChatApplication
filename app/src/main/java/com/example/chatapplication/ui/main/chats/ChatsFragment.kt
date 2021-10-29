@@ -84,8 +84,9 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(),
     }
 
     fun setUpRvData(chats: ChatsViewState.Chats) {
-        if (chats.chats.isEmpty()) handleEmptyList()
-        else chatsRvAdapter.apply {
+        if (chats.chats.isEmpty()) {
+            handleEmptyList()
+        } else chatsRvAdapter.apply {
             submitList(chats.chats)
             notifyDataSetChanged()
         }
@@ -96,9 +97,10 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(),
         binding.tvNoChats.visibility = View.VISIBLE
     }
 
-    private fun loadUserAccountData(){
+    private fun loadUserAccountData() {
         viewModel.setStateEvent(ChatsStateEvent.LoadCurrUserAccount)
     }
+
     private fun loadChats() {
         viewModel.setStateEvent(ChatsStateEvent.LoadAllChats)
     }
@@ -116,7 +118,6 @@ class ChatsFragment : BaseChatsFragment<FragmentChatsBinding>(),
         viewModel.setViewState(
             viewModel.currentState.copy(openChatDialog = ChatsViewState.OpenChatDialog(chat, null))
         )
-        Log.d("AppDebug", "onItemSelected: ${viewModel.currentState.toString()}")
         findNavController().navigate(R.id.action_chatsFragment_to_activeChatFragment)
     }
 }

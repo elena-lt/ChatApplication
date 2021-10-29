@@ -29,9 +29,9 @@ object ChatDialogMapper {
             chat.lastMessageDateSent,
 //            chat.lastMessageUserId,
 //            chat.photo,
-//            chat.userId,
+            userId = chat.userId,
 //            chat.roomJid,
-            chat.unreadMessageCount,
+            unreadMessageCount = chat.unreadMessageCount,
             name = chat.name,
             occupantsIds = listOf(chat.occupant1, chat.occupant2)
 //            chat.type
@@ -44,6 +44,7 @@ object ChatDialogMapper {
                 it.dialogId,
                 it.lastMessage,
                 it.lastMessageDateSent,
+                it.userId,
                 it.unreadMessageCount,
                 it.name,
                 it.occupants[0],

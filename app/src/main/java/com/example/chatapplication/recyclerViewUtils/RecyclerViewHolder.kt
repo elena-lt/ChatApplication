@@ -28,6 +28,7 @@ sealed class RecyclerViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(
         fun bind (chatItem: Models.Chat){
             binding.tvUserName.text = chatItem.name
             binding.tvLastMessage.text = chatItem.lastMessage
+            binding.userProfileImage.setImageBitmap(chatItem.img)
             binding.root.setOnClickListener {
                 onClickListener?.onItemSelected(adapterPosition, chatItem)
             }

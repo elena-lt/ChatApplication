@@ -1,5 +1,7 @@
 package com.example.core.models
 
+import android.graphics.Bitmap
+
 data class ChatDialogDomain(
 
     var dialogId: String? = null,
@@ -13,4 +15,5 @@ data class ChatDialogDomain(
     val name: String? = null,
     val occupantsIds: List<Int>? = null,
     val type: Int? = null,
+    var img: Bitmap? = null
 )

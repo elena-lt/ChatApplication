@@ -22,8 +22,8 @@ data class ChatEntity(
 //    @ColumnInfo(name = "photo")
 //    val photo: String? = null,
 
-//    @ColumnInfo(name = "user_id")
-//    val userId: Int? = null,
+    @ColumnInfo(name = "user_id")
+    val userId: Int? = null,
 
 //    @ColumnInfo(name = "room_jid")
 //    val roomJid: String? = null,

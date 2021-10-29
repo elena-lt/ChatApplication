@@ -10,7 +10,7 @@ interface ChatsDataSource {
 
     suspend fun loadAllChats(): Flow<DataState<MutableList<ChatDialogDomain>>>
 
-    suspend fun findUser(): Flow<DataState<MutableList<UserDomain>>>
+    suspend fun loadAllUsers(): Flow<DataState<MutableList<UserDomain>>>
 
     suspend fun startNewChat(userId: Int): Flow<DataState<ChatDialogDomain>>
 

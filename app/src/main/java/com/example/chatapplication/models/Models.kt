@@ -27,6 +27,7 @@ sealed class Models {
         val name: String? = null,
         val occupantsIds: List<Int>? = null,
         val type: Int? = null,
+        val img: Bitmap? = null
     ) : Models()
 
 }
