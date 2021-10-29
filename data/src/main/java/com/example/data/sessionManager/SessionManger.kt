@@ -9,7 +9,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.data.sessionManager.keyManager.KeyManager
-import com.example.data.utils.Const
 import com.example.data.utils.Const.SP_DATA
 import com.example.data.utils.Const.SP_IV
 import com.example.data.utils.Const.SP_USER_ID
@@ -17,13 +16,14 @@ import com.example.data.utils.Const.SP_USER_LOGIN
 import com.quickblox.auth.session.QBSession
 import com.quickblox.auth.session.QBSessionManager
 import com.quickblox.auth.session.QBSessionParameters
-import com.quickblox.chat.Consts
 import com.quickblox.chat.QBChatService
 import com.quickblox.core.QBEntityCallback
 import com.quickblox.core.exception.QBResponseException
 import com.quickblox.users.QBUsers
 import com.quickblox.users.model.QBUser
 import kotlinx.coroutines.*
+import org.jivesoftware.smack.ConnectionListener
+import org.jivesoftware.smack.XMPPConnection
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -128,9 +128,10 @@ class SessionManger @Inject constructor(
         if (qbChatService.user == null) {
             GlobalScope.launch {
                 withContext(Dispatchers.IO) {
+                    qbChatService.setUseStreamManagement(true)
                     qbChatService.login(user, object : QBEntityCallback<Void> {
                         override fun onSuccess(p0: Void?, p1: Bundle?) {
-                            Log.d("AppDebug", "onSuccess: chat service created")
+                            registerSessionManagerListener()
                         }
 
                         override fun onError(p0: QBResponseException?) {
@@ -140,6 +141,39 @@ class SessionManger @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun registerSessionManagerListener() {
+        val connectionListener = object : ConnectionListener {
+            override fun connected(p0: XMPPConnection?) {
+                Log.d("ChatService", "connected: ")
+            }
+
+            override fun authenticated(p0: XMPPConnection?, p1: Boolean) {
+                Log.d("ChatService", "authenticated: ")
+            }
+
+            override fun connectionClosed() {
+                Log.d("ChatService", "connectionClosed: ")
+            }
+
+            override fun connectionClosedOnError(p0: Exception?) {
+                Log.d("ChatService", "connectionClosedOnError: ")
+            }
+
+            override fun reconnectionSuccessful() {
+                Log.d("ChatService", "reconnectionSuccessful: ")
+            }
+
+            override fun reconnectingIn(p0: Int) {
+                Log.d("ChatService", "reconnectingIn: ")
+            }
+
+            override fun reconnectionFailed(p0: Exception?) {
+                Log.d("ChatService", "reconnectionFailed: ")
+            }
+        }
+        qbChatService.addConnectionListener(connectionListener)
     }
 
     fun createChatService(userLogin: String, userPassword: String) {
@@ -165,6 +199,18 @@ class SessionManger @Inject constructor(
                 }
             }
         }
+    }
+
+    fun logoutFromChatService() {
+        qbChatService.logout(object : QBEntityCallback<Void> {
+            override fun onSuccess(p0: Void?, p1: Bundle?) {
+                Log.d("AppDebug", "onSuccess: logout")
+            }
+
+            override fun onError(p0: QBResponseException?) {
+                Log.d("AppDebug", "onError: ${p0?.message}")
+            }
+        })
     }
 
     fun removeSessionManagerListener() {
