@@ -1,6 +1,6 @@
 package com.example.chatapplication.ui
 
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -45,10 +46,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
 
         setupNavGraph()
 
-        Log.d(TAG, "onCreate: ${sessionManager.currUser.value}")
         initSessionManager()
         subscribeToObservers()
-
     }
 
     override fun onResume() {
@@ -61,6 +60,15 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         sessionManager.unregister()
         sessionManager.removeSessionManagerListener()
         super.onPause()
+    }
+
+    override fun onStop() {
+        logoutFromChatService()
+        super.onStop()
+    }
+
+    private fun logoutFromChatService() {
+        sessionManager.logoutFromChatService()
     }
 
     @ExperimentalCoroutinesApi
@@ -77,14 +85,14 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 connectivityManager.networkStatus.collect {
-                  when (it){
-                      is ConnectivityManager.NetworkStatus.Available -> {
-                          binding.tvNetworkStatus.visibility = View.GONE
-                      }
-                      is ConnectivityManager.NetworkStatus.Unavailable -> {
-                          binding.tvNetworkStatus.visibility = View.VISIBLE
-                      }
-                  }
+                    when (it) {
+                        is ConnectivityManager.NetworkStatus.Available -> {
+                            binding.tvNetworkStatus.visibility = View.GONE
+                        }
+                        is ConnectivityManager.NetworkStatus.Unavailable -> {
+                            binding.tvNetworkStatus.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         }
@@ -107,7 +115,8 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
         navController.navigate(
             R.id.chats_graph,
             null,
-            NavOptions.Builder().setPopUpTo(R.id.chats_graph, inclusive = true, saveState = false).build()
+            NavOptions.Builder().setPopUpTo(R.id.chats_graph, inclusive = true, saveState = false)
+                .build()
         )
     }
 
@@ -120,7 +129,7 @@ class MainActivity : AppCompatActivity(), OnDataStateChangeListener {
     override fun onDataStateChanged(dataState: DataState<*>) {
         dataState.loading.let {
             Log.d(TAG, "onDataStateChanged: loading $it")
-           binding.mainProgressBar.isVisible = it
+            binding.mainProgressBar.isVisible = it
         }
 
         dataState.errorMessage?.let {
