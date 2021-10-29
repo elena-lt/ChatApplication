@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.data.qbUtils.QbChatServiceUtils
 import com.example.data.sessionManager.keyManager.KeyManager
 import com.example.data.utils.Const.SP_DATA
 import com.example.data.utils.Const.SP_IV
@@ -32,7 +33,7 @@ class SessionManger @Inject constructor(
     private val qbSessionManager: QBSessionManager,
     val sharedPreferences: SharedPreferences,
     val sharedPreferencesEditor: SharedPreferences.Editor,
-    private val qbChatService: QBChatService,
+    private val chatServiceUtils: QbChatServiceUtils,
     private val keyManager: KeyManager
 ) {
 
@@ -53,9 +54,6 @@ class SessionManger @Inject constructor(
     fun login(userId: Int, userLogin: String) {
         val prevUserId = sharedPreferences.getInt(SP_USER_ID, -1)
         val prevUserLogin = sharedPreferences.getString(SP_USER_LOGIN, null)
-
-//        sharedPreferencesEditor.putString(SP_USER_LOGIN, userLogin).apply()
-//        sharedPreferencesEditor.putInt(SP_USER_ID, userId).apply()
 
         if (userId != prevUserId) {
             sharedPreferencesEditor.putInt(SP_USER_ID, userId).apply()
@@ -104,10 +102,7 @@ class SessionManger @Inject constructor(
                     qbSessionManager.sessionParameters.userId,
                     qbSessionManager.sessionParameters.userLogin
                 )
-                createChatService(
-                    qbSessionManager.sessionParameters.userLogin,
-                    qbSessionManager.sessionParameters.userPassword
-                )
+                createChatService(qbSessionManager.sessionParameters.userLogin)
                 Log.d("AppDebug", "SESSION RESTORED ${session.userId}")
             }
 
@@ -124,93 +119,25 @@ class SessionManger @Inject constructor(
 
     }
 
-    fun createChatServiceWithUser(user: QBUser) {
-        if (qbChatService.user == null) {
-            GlobalScope.launch {
-                withContext(Dispatchers.IO) {
-                    qbChatService.setUseStreamManagement(true)
-                    qbChatService.login(user, object : QBEntityCallback<Void> {
-                        override fun onSuccess(p0: Void?, p1: Bundle?) {
-                            registerSessionManagerListener()
-                        }
-
-                        override fun onError(p0: QBResponseException?) {
-                            Log.d("AppDebug", "onError: chat service not created ${p0?.message}")
-                        }
-                    })
-                }
-            }
-        }
+    fun loginToChatService(user: QBUser) {
+        chatServiceUtils.login(user)
     }
 
-    private fun registerSessionManagerListener() {
-        val connectionListener = object : ConnectionListener {
-            override fun connected(p0: XMPPConnection?) {
-                Log.d("ChatService", "connected: ")
-            }
+    fun createChatService(userLogin: String) {
+        val id = sharedPreferences.getInt(SP_USER_ID, -1)
+        val data = sharedPreferences.getString(SP_DATA, "")
+        val iv = sharedPreferences.getString(SP_IV, "")
 
-            override fun authenticated(p0: XMPPConnection?, p1: Boolean) {
-                Log.d("ChatService", "authenticated: ")
-            }
-
-            override fun connectionClosed() {
-                Log.d("ChatService", "connectionClosed: ")
-            }
-
-            override fun connectionClosedOnError(p0: Exception?) {
-                Log.d("ChatService", "connectionClosedOnError: ")
-            }
-
-            override fun reconnectionSuccessful() {
-                Log.d("ChatService", "reconnectionSuccessful: ")
-            }
-
-            override fun reconnectingIn(p0: Int) {
-                Log.d("ChatService", "reconnectingIn: ")
-            }
-
-            override fun reconnectionFailed(p0: Exception?) {
-                Log.d("ChatService", "reconnectionFailed: ")
-            }
-        }
-        qbChatService.addConnectionListener(connectionListener)
-    }
-
-    fun createChatService(userLogin: String, userPassword: String) {
-        GlobalScope.launch {
-            withContext(Dispatchers.IO) {
-
-                val id = sharedPreferences.getInt(SP_USER_ID, -1)
-                val data = sharedPreferences.getString(SP_DATA, "")
-                val iv = sharedPreferences.getString(SP_IV, "")
-
-                val pd = keyManager.decryptData(
-                    id.toString(),
-                    Base64.decode(data, Base64.DEFAULT),
-                    Base64.decode(iv, Base64.DEFAULT)
-                )
-                val user = QBUser(userLogin, pd)
-                kotlin.runCatching {
-                    QBUsers.signIn(user).perform()
-                }.onSuccess {
-                    createChatServiceWithUser(user)
-                }.onFailure {
-                    Log.d("AppDebug", "onError: USER NOT LOGGED IN -> ${it}")
-                }
-            }
-        }
+        val pd = keyManager.decryptData(
+            id.toString(),
+            Base64.decode(data, Base64.DEFAULT),
+            Base64.decode(iv, Base64.DEFAULT)
+        )
+        chatServiceUtils.login(userLogin, pd)
     }
 
     fun logoutFromChatService() {
-        qbChatService.logout(object : QBEntityCallback<Void> {
-            override fun onSuccess(p0: Void?, p1: Bundle?) {
-                Log.d("AppDebug", "onSuccess: logout")
-            }
-
-            override fun onError(p0: QBResponseException?) {
-                Log.d("AppDebug", "onError: ${p0?.message}")
-            }
-        })
+        chatServiceUtils.logout()
     }
 
     fun removeSessionManagerListener() {
